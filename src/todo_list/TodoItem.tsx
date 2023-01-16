@@ -1,17 +1,53 @@
+import { useState, useEffect, useRef } from 'react';
+import { useUpdateEffect } from '../custom_hook/useUpdateEffect';
 import { TodoItemInterface } from './TodoItemInterface';
 import './TodoItem.scss';
-import axios from 'axios';
+import { Pencil, Trash3 } from 'react-bootstrap-icons';
 
 interface Props {
   todoItem: TodoItemInterface,
-  setTodoItem: (todoItem: TodoItemInterface, checked: boolean) => void
+  changeTodoItem: (label: string, checked: boolean) => void,
+  postTodoItem: () => void,
+  deleteTodoItem: () => void
 }
 
 function TodoItem (props: Props) {
+  const [edit, setEdit] = useState<boolean>(false)
+  const labelInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (edit && labelInputRef.current !== null) {
+      labelInputRef.current.focus()
+    }
+  }, [edit])
+
+  useUpdateEffect(() => {
+    props.postTodoItem()
+  }, [props.todoItem.label, props.todoItem.checked])
+
+  function _onKeyUp(event: any) {
+    if (event.key === 'Enter') {
+      setEdit(false)
+    }
+  }
+
   return (
-    <div>
-      <input id={`itemCheckbox${props.todoItem.id}`} type="checkbox" className="form-check-input me-2" checked={props.todoItem.checked} onChange={() => props.setTodoItem(props.todoItem, !props.todoItem.checked)} />
-      <label htmlFor={`itemCheckbox${props.todoItem.id}`} className={`form-check-label ${props.todoItem.checked ? 'todo-item-label-checked' : ''}`}>{props.todoItem.label}</label>
+    <div className="todo-item-layout">
+      <input id={`itemCheckbox${props.todoItem.id}`} type="checkbox" 
+        className="form-check-input me-2" checked={props.todoItem.checked} 
+        onChange={() => props.changeTodoItem(props.todoItem.label, !props.todoItem.checked)} />
+      {edit ?
+        <input type="text" className="form-control w-auto" ref={labelInputRef} 
+          value={props.todoItem.label} onKeyUp={event => _onKeyUp(event)}
+          onChange={event => props.changeTodoItem(event.target.value, props.todoItem.checked)} /> :
+        <label htmlFor={`itemCheckbox${props.todoItem.id}`} className={`form-check-label ${props.todoItem.checked ? 'todo-item-label-checked' : ''}`}>{props.todoItem.label}</label>}
+      <div className="flex-grow-1" />
+      <a href="#" className="todo-item-layout-button ms-3" onClick={() => setEdit(!edit)}>
+        <Pencil />
+      </a>
+      <a href="#" className="todo-item-layout-button additional-margin" onClick={() => props.deleteTodoItem()}>
+        <Trash3 />
+      </a>
     </div>
   )
 }

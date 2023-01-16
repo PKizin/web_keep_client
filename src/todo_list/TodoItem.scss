@@ -1,3 +1,23 @@
-.todo-item-label-checked {
-  opacity: 0.25;
+.todo-item-layout {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  .todo-item-layout-button {
+    visibility: hidden;
+
+    &.additional-margin {
+      margin-left: 4px;
+    }
+  }
+
+  &:hover {
+    .todo-item-layout-button {
+      visibility: visible;
+    }
+  }
+
+  .todo-item-label-checked {
+    opacity: 0.25;
+  }
 }

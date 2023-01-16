@@ -2,12 +2,15 @@
   .card-title-layout {
     display: flex;
     flex-flow: row nowrap;
-    gap: 4px;
+    align-items: center;
   
     .card-title-layout-button {
       font-size: medium;
-      line-height: 1.55;
       visibility: hidden;
+
+      &.additional-margin {
+        margin-left: 4px;
+      }
     }
   }
 
@@ -17,5 +20,11 @@
         visibility: visible;
       }
     }
+  }
+
+  .card-text {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 4px;
   }
 }

@@ -50,6 +50,7 @@
     "@types/sass": "^1.43.1",
     "@types/uuid": "^9.0.0",
     "bootstrap-icons": "^1.10.3",
+    "react-bootstrap-icons": "^1.10.2",
     "sass": "^1.57.1"
   }
 }

@@ -3,6 +3,7 @@ import { TodoList } from './TodoList';
 import { UserInterface } from '../modal/UserInterface';
 import { TodoListInterface } from './TodoListInterface';
 import axios from 'axios';
+import { FilePlus } from 'react-bootstrap-icons';
 
 interface Props {
   user: UserInterface | null
@@ -70,20 +71,21 @@ function TodoListContainer (props: Props) {
       })
   }
 
-  function _postTodoList (todoList: TodoListInterface, title: string) {
+  function _changeTodoList (todoList: TodoListInterface, title: string) {
+    let newTodoLists = todoLists.slice()
+    let newTodoList = newTodoLists.find(l => l.id === todoList.id)
+    if (newTodoList) {
+      newTodoList.title = title
+      setTodoLists(newTodoLists)
+    }
+  }
+
+  function _postTodoList (todoList: TodoListInterface) {
     axios
       .post('http://localhost:3001/todo_list', null, {
         params: {
           id: todoList.id,
-          title: title
-        }
-      })
-      .then(() => {
-        let newTodoLists = todoLists.slice()
-        let newTodoList = newTodoLists.find(l => l.id === todoList.id)
-        if (newTodoList) {
-          newTodoList.title = title
-          setTodoLists(newTodoLists)
+          title: todoList.title
         }
       })
   }
@@ -96,11 +98,12 @@ function TodoListContainer (props: Props) {
           {todoLists.map(todoList => 
             <TodoList todoList={todoList} key={todoList.id} 
             deleteTodoList={() => _deleteTodoList(todoList)}
-            postTodoList={title => _postTodoList(todoList, title)} />)}
+            changeTodoList={title => _changeTodoList(todoList, title)}
+            postTodoList={() => _postTodoList(todoList)} />)}
           {loading ? 
             <div className="spinner-border" /> :
             <a href="#" onClick={() => _putTodoList()}>
-              <i className="bi bi-file-plus" />
+              <FilePlus size={32} />
             </a>}
         </>}
     </>

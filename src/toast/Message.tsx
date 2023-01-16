@@ -1,4 +1,5 @@
 import { MessageInterface } from './MessageInterface'
+import './Message.scss'
 
 interface Props {
   message: MessageInterface,
@@ -7,7 +8,7 @@ interface Props {
 
 function Message(props: Props) {
   return (
-    <div className={`alert alert-dismissible alert-${props.message.type} user-select-none`}>
+    <div className={`alert alert-dismissible alert-${props.message.type} user-select-none custom-message`}>
       {props.message.text}
       <div className="btn-close" onClick={() => props.onDelete(props.message)} />
     </div>

@@ -6,6 +6,7 @@ import { Toast } from './toast/Toast'
 import { MessageInterface } from './toast/MessageInterface';
 import { TodoListContainer } from './todo_list/TodoListContainer';
 import _ from 'lodash';
+import { BoxArrowLeft } from 'react-bootstrap-icons';
 
 function App() {
   const [timer, setTimer] = useState(_parseDate(new Date()))
@@ -83,7 +84,7 @@ function App() {
               {user === null ? 'guest' : user.login}
             </a>
             <a href="#" onClick={() => _logout()}>
-              <i className="bi bi-box-arrow-left" />
+              <BoxArrowLeft />
             </a>
           </div>
         </div>
