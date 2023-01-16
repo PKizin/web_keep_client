@@ -1,0 +1,21 @@
+.card {
+  .card-title-layout {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 4px;
+  
+    .card-title-layout-button {
+      font-size: medium;
+      line-height: 1.55;
+      visibility: hidden;
+    }
+  }
+
+  &:hover {
+    .card-title-layout {
+      .card-title-layout-button {
+        visibility: visible;
+      }
+    }
+  }
+}

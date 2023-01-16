@@ -1,0 +1,13 @@
+.user-modal-root {
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+
+  .user-modal-row > label {
+    user-select: none;
+  }
+}
