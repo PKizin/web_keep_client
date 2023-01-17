@@ -4,6 +4,7 @@ import { UserInterface } from '../modal/UserInterface';
 import { TodoListInterface } from './TodoListInterface';
 import axios from 'axios';
 import { FilePlus } from 'react-bootstrap-icons';
+import './TodoListContainer.scss';
 
 interface Props {
   user: UserInterface | null
@@ -102,7 +103,7 @@ function TodoListContainer (props: Props) {
             postTodoList={() => _postTodoList(todoList)} />)}
           {loading ? 
             <div className="spinner-border" /> :
-            <a href="#" onClick={() => _putTodoList()}>
+            <a href="#" className="todo-list-container-button" onClick={() => _putTodoList()}>
               <FilePlus size={32} />
             </a>}
         </>}

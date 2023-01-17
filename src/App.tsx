@@ -1,4 +1,5 @@
 import './App.scss';
+import './context/ThemeContext.scss';
 import { useState, useEffect, useRef } from 'react';
 import { UserModal } from './modal/UserModal'
 import { UserInterface } from './modal/UserInterface';
@@ -13,12 +14,20 @@ function App() {
   const [user, setUser] = useState<UserInterface | null>(null)
   const [showUserModal, setShowUserModal] = useState<boolean>(false)
   const [message, setMessage] = useState<MessageInterface>({ text: '', type: 'warning' })
+  const [darkTheme, setDarkTheme] = useState(false)
   const lastMessageRef = useRef<MessageInterface>({ text: '', type: 'warning' })
 
   useEffect(() => {
     const userSaved = sessionStorage.getItem('user')
     if (userSaved !== null) {
       setUser(JSON.parse(userSaved))
+    }
+  }, [])
+
+  useEffect(() => {
+    const darkThemeSaved = sessionStorage.getItem('darkTheme')
+    if (darkThemeSaved !== null) {
+      setDarkTheme(darkThemeSaved === 'true')
     }
   }, [])
 
@@ -35,6 +44,15 @@ function App() {
       sessionStorage.removeItem('user')
     }
   }, [user])
+
+  useEffect(() => {
+    if (darkTheme) {
+      sessionStorage.setItem('darkTheme', 'true')
+    }
+    else {
+      sessionStorage.removeItem('darkTheme')
+    }
+  }, [darkTheme])
 
   useEffect(() => {
     lastMessageRef.current = message
@@ -72,11 +90,15 @@ function App() {
   }
 
   return (
-    <>
-      <div className="layout-root">
+    <div className={`${darkTheme ? 'theme-dark' : 'theme-light'}`}>
+      <div className="layout-root themed">
         <div className="layout-header">
           <div className="layout-header-timer">
             {timer}
+          </div>
+          <div className="form-check form-switch layout-header-switch">
+            <input id="themeSwitch" type="checkbox" className="form-check-input layout-header-switch-input" checked={darkTheme} onChange={() => setDarkTheme(!darkTheme)} />
+            <label htmlFor="themeSwitch" className="form-check-label">{darkTheme ? 'Dark theme' : 'Light theme'}</label>
           </div>
           <div className="flex-grow-1" />
           <div className="layout-header-auth">
@@ -98,7 +120,7 @@ function App() {
       </div>
       {showUserModal && 
         <UserModal setUser={_setUserCallback} setShowUserModal={_setShowUserModalCallback} setMessage={_setMessageCallback} />}
-    </>
+    </div>
   );
 }
 

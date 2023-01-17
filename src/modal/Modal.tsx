@@ -26,14 +26,14 @@ function Modal(props: Props) {
 
   return (
     <div className="modal-background">
-      <div className="modal-window" onKeyUp={_onKeyUp}>
-        <div className="modal-window-header">
+      <div className="modal-window themed" onKeyUp={_onKeyUp}>
+        <div className="modal-window-header themed">
           {loading ? props.titleLoading : props.title}
         </div>
-        <div className="modal-window-body">
+        <div className="modal-window-body themed">
           {loading ? <div className="spinner-border" /> : props.children}
         </div>
-        <div className="modal-window-footer">
+        <div className="modal-window-footer themed">
           <button ref={okButtonRef} className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.okClicked(setLoadingCallback)} disabled={props.isDisabled()}>OK</button>
           <button className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.cancelClicked()}>CANCEL</button>
         </div>

@@ -110,7 +110,7 @@ function TodoList (props: Props) {
   
   return (
     <div>
-      <div className="card">
+      <div className="card themed">
         <div className="card-body">
           <h5 className="card-title user-select-none">
             <div className="card-title-layout">
@@ -118,7 +118,7 @@ function TodoList (props: Props) {
                 <input type="text" className="form-control" ref={titleInputRef} 
                   value={props.todoList.title} onKeyUp={event => _onKeyUp(event)} 
                   onChange={event => props.changeTodoList(event.target.value)} /> :
-                <div className={todoItems.every(i => i.checked) ? 'card-title-checked' : ''}>{props.todoList.title}</div>}
+                props.todoList.title}
               <div className="flex-grow-1" />
               <a href="#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
                 <Pencil />
@@ -132,7 +132,7 @@ function TodoList (props: Props) {
             {loading ? 
               <div className="spinner-border spinner-border-sm" /> : 
               <>
-                {todoItems.map(todoItem =>
+                {todoItems.filter(todoItem => !todoItem.checked).map(todoItem =>
                   <TodoItem todoItem={todoItem} key={todoItem.id}
                     changeTodoItem={(label, checked) => _changeTodoItem(todoItem, label, checked)}
                     postTodoItem={() => _postTodoItem(todoItem)}
@@ -140,6 +140,15 @@ function TodoList (props: Props) {
                 <a href="#" onClick={() => _putTodoItem()}>
                   <PlusSquare />
                 </a>
+                {todoItems.some(i => i.checked) ? 
+                  <>
+                    <hr />
+                    {todoItems.filter(todoItem => todoItem.checked).map(todoItem => 
+                      <TodoItem todoItem={todoItem} key={todoItem.id}
+                      changeTodoItem={(label, checked) => _changeTodoItem(todoItem, label, checked)}
+                      postTodoItem={() => _postTodoItem(todoItem)}
+                      deleteTodoItem={() => _deleteTodoItem(todoItem)} />)}
+                  </> : ''}
               </>}
           </div>
         </div>
