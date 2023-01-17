@@ -118,7 +118,7 @@ function TodoList (props: Props) {
                 <input type="text" className="form-control" ref={titleInputRef} 
                   value={props.todoList.title} onKeyUp={event => _onKeyUp(event)} 
                   onChange={event => props.changeTodoList(event.target.value)} /> :
-                props.todoList.title}
+                <div className={todoItems.every(i => i.checked) ? 'card-title-checked' : ''}>{props.todoList.title}</div>}
               <div className="flex-grow-1" />
               <a href="#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
                 <Pencil />
