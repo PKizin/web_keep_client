@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
 import './Modal.scss'
 
 interface Props {
@@ -13,20 +14,28 @@ interface Props {
 function Modal(props: Props) {
   const [loading, setLoading] = useState(false)
   const okButtonRef = useRef<HTMLButtonElement>(null)
+  const cancelButtonRef = useRef<HTMLButtonElement>(null)
+  const windowRef = useRef<HTMLDivElement>(null)
+
+  useKeyupEffect(windowRef, ['Enter'], () => {
+    if (okButtonRef.current) {
+      okButtonRef.current.click()
+    }
+  }, [])
+
+  useKeyupEffect(windowRef, ['Escape'], () => {
+    if (cancelButtonRef.current) {
+      cancelButtonRef.current.click()
+    }
+  }, [])
 
   function setLoadingCallback(loading: boolean) {
     setLoading(loading)
   }
 
-  function _onKeyUp(event: any) {
-    if (event.key === 'Enter') {
-      okButtonRef.current!.click()
-    }
-  }
-
   return (
     <div className="modal-background">
-      <div className="modal-window themed" onKeyUp={_onKeyUp}>
+      <div className="modal-window themed" ref={windowRef}>
         <div className="modal-window-header themed">
           {loading ? props.titleLoading : props.title}
         </div>
@@ -35,7 +44,7 @@ function Modal(props: Props) {
         </div>
         <div className="modal-window-footer themed">
           <button ref={okButtonRef} className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.okClicked(setLoadingCallback)} disabled={props.isDisabled()}>OK</button>
-          <button className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.cancelClicked()}>CANCEL</button>
+          <button ref={cancelButtonRef} className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.cancelClicked()}>CANCEL</button>
         </div>
       </div>
     </div>

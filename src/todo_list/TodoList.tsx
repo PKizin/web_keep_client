@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useUpdateEffect } from '../custom_hook/useUpdateEffect';
+import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
 import { TodoListInterface } from './TodoListInterface';
 import { TodoItemInterface } from './TodoItemInterface';
 import { TodoItem } from './TodoItem';
@@ -27,8 +28,14 @@ function TodoList (props: Props) {
   }, [])
 
   useEffect(() => {
-    if (edit && titleInputRef.current !== null) {
-      titleInputRef.current.focus()
+    if (edit) {
+      titleInputRef.current!.focus()
+    }
+  }, [edit])
+
+  useKeyupEffect(titleInputRef, ['Enter', 'Escape'], () => {
+    if (edit) {
+      setEdit(false)
     }
   }, [edit])
 
@@ -101,12 +108,6 @@ function TodoList (props: Props) {
         }
       })
   }
-
-  function _onKeyUp(event: any) {
-    if (event.key === 'Enter') {
-      setEdit(false)
-    }
-  }
   
   return (
     <div>
@@ -115,8 +116,7 @@ function TodoList (props: Props) {
           <h5 className="card-title user-select-none">
             <div className="card-title-layout">
               {edit ? 
-                <input type="text" className="form-control" ref={titleInputRef} 
-                  value={props.todoList.title} onKeyUp={event => _onKeyUp(event)} 
+                <input type="text" className="form-control" ref={titleInputRef} value={props.todoList.title}
                   onChange={event => props.changeTodoList(event.target.value)} /> :
                 props.todoList.title}
               <div className="flex-grow-1" />
