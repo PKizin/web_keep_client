@@ -6,8 +6,8 @@ import './UserModal.scss'
 import axios from 'axios'
 
 interface Props {
+  hideModal: () => void,
   setUser: (user: UserInterface | null) => void,
-  setShowUserModal: (showUserModal: boolean) => void,
   setMessage: (message: MessageInterface) => void
 }
 
@@ -45,7 +45,7 @@ function UserModal(props: Props) {
       })
       .finally(() => {
         setLoading(false)
-        props.setShowUserModal(false)
+        props.hideModal()
       }), 1000)
   }
 
@@ -67,19 +67,19 @@ function UserModal(props: Props) {
       })
       .finally(() => {
         setLoading(false)
-        props.setShowUserModal(false)
+        props.hideModal()
       }), 1000)
   }
 
   return (
     <Modal title={registered ? 'Log in' : 'Sign up'} titleLoading={registered ? 'Logging in...' : 'Signing up...'}
       okClicked={(setLoading: (loading: boolean) => void) => registered ? _signin(setLoading) : _signup(setLoading)} 
-      cancelClicked={() => props.setShowUserModal(false)}
+      cancelClicked={() => props.hideModal()}
       isDisabled={() => username.length === 0 || password.length === 0}>
       <div className="user-modal-root">
         <div className="user-modal-row">
           <label htmlFor="usernameInput" className="form-label">Username</label>
-          <input ref={usernameInputRef} type="text" id="usernameInput" className="form-control" value={username} onChange={e => setUsername(e.target.value)}></input>
+          <input ref={usernameInputRef} type="text" id="usernameInput" className="form-control" value={username} onChange={e => setUsername(e.target.value)} autoComplete="off"></input>
         </div>
         <div className="user-modal-row">
           <label htmlFor="passwordInput" className="form-label">Password</label>

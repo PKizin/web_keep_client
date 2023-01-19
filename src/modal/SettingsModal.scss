@@ -1,4 +1,4 @@
-.user-modal-root {
+.settings-modal-root {
   height: 100%;
   width: 100%;
   padding: 10px;
@@ -7,7 +7,7 @@
   flex-flow: column nowrap;
   gap: 10px;
 
-  .user-modal-row label {
+  .settings-modal-row label {
     user-select: none;
   }
 }

@@ -5,8 +5,31 @@
   input[type="text"], 
   input[type="password"], 
   input[type="checkbox"]:not(:checked), 
+  input[type="radio"]:not(:checked), 
   textarea {
     background-color : #fff;
+  }
+
+  ::-webkit-scrollbar {
+    background: #fff;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #ccc;
+  }
+
+  .alert {
+    background-color: #ccc;
+    border-color: #ccc;
+    color: #000;
+
+    a {
+      color: #000;
+
+      &:hover {
+        opacity: 0.5;
+      }
+    }
   }
 }
 
@@ -18,9 +41,32 @@
   input[type="text"], 
   input[type="password"], 
   input[type="checkbox"]:not(:checked), 
+  input[type="radio"]:not(:checked), 
   textarea {
     background-color: #444;
     border-color: #444;
     color: #ccc;
+  }
+
+  ::-webkit-scrollbar {
+    background: #222;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #444;
+  }
+
+  .alert {
+    background-color: #444;
+    border-color: #444;
+    color: #ccc;
+
+    a {
+      color: #ccc;
+
+      &:hover {
+        opacity: 0.5;
+      }
+    }
   }
 }

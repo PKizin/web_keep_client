@@ -19,7 +19,7 @@ function Toast(message: MessageInterface) {
 
   function _addMessage(message: MessageInterface) {
     setMessages([message, ...messages])
-    setTimeout(() => _deleteMessage(message), 10000)
+    setTimeout(() => _deleteMessage(message), 5000)
   }
 
   function _deleteMessage(message: MessageInterface) {

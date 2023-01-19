@@ -49,3 +49,14 @@
     justify-content: center;
   }
 }
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #000;
+  -webkit-border-radius: 1ex;
+}

@@ -1,5 +1,6 @@
-import { MessageInterface } from './MessageInterface'
-import './Message.scss'
+import { MessageInterface } from './MessageInterface';
+import { XLg } from 'react-bootstrap-icons';
+import './Message.scss';
 
 interface Props {
   message: MessageInterface,
@@ -8,9 +9,17 @@ interface Props {
 
 function Message(props: Props) {
   return (
-    <div className={`alert alert-dismissible alert-${props.message.type} user-select-none custom-message`}>
-      {props.message.text}
-      <div className="btn-close" onClick={() => props.onDelete(props.message)} />
+    <div className={`alert alert-${props.message.type} user-select-none custom-message`}>
+      <div className="d-flex">
+        <div className="flex-grow-1">
+          {props.message.text}
+        </div>
+        <div>
+          <a href="#" onClick={() => props.onDelete(props.message)}>
+            <XLg size={24}/>
+          </a>
+        </div>
+      </div>
     </div>
   )
 }

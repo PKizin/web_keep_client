@@ -7,12 +7,13 @@ import { Toast } from './toast/Toast'
 import { MessageInterface } from './toast/MessageInterface';
 import { TodoListContainer } from './todo_list/TodoListContainer';
 import _ from 'lodash';
-import { BoxArrowLeft } from 'react-bootstrap-icons';
+import { BoxArrowLeft, Gear } from 'react-bootstrap-icons';
+import { SettingsModal } from './modal/SettingsModal';
 
 function App() {
   const [timer, setTimer] = useState(_parseDate(new Date()))
   const [user, setUser] = useState<UserInterface | null>(null)
-  const [showUserModal, setShowUserModal] = useState<boolean>(false)
+  const [showModal, setShowModal] = useState<'user' | 'settings' | null>(null)
   const [message, setMessage] = useState<MessageInterface>({ text: '', type: 'warning' })
   const [darkTheme, setDarkTheme] = useState(false)
   const lastMessageRef = useRef<MessageInterface>({ text: '', type: 'warning' })
@@ -37,11 +38,11 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (user !== null) {
-      sessionStorage.setItem('user', JSON.stringify(user))
+    if (user === null) {
+      sessionStorage.removeItem('user')
     }
     else {
-      sessionStorage.removeItem('user')
+      sessionStorage.setItem('user', JSON.stringify(user))
     }
   }, [user])
 
@@ -66,14 +67,6 @@ function App() {
     return [username, password]
   }*/
 
-  function _setUserCallback(user: UserInterface | null) {
-    setUser(user)
-  }
-
-  function _setShowUserModalCallback(showUserModal: boolean) {
-    setShowUserModal(showUserModal)
-  }
-
   function _setMessageCallback(message_: MessageInterface) {
     setMessage({ id: lastMessageRef.current.id === undefined ? 0 : lastMessageRef.current.id + 1, ... message_ })
   }
@@ -83,10 +76,8 @@ function App() {
   }
 
   function _logout() {
-    if (user !== null) {
-      _setMessageCallback({ text: `User "${user.login}" logged out`, type: 'success' })
-      _setUserCallback(null)
-    }
+    _setMessageCallback({ text: `User "${user!.login}" logged out`, type: 'success' })
+    setUser(null)
   }
 
   return (
@@ -102,11 +93,14 @@ function App() {
           </div>
           <div className="flex-grow-1" />
           <div className="layout-header-auth">
-            <a href="#" className="layout-header-user" onClick={() => setShowUserModal(true)}>
+            <a href="#" className="layout-header-user" onClick={() => setShowModal('user')}>
               {user === null ? 'guest' : user.login}
             </a>
-            <a href="#" onClick={() => _logout()}>
+            <a href="#" onClick={() => (user !== null) && _logout()}>
               <BoxArrowLeft />
+            </a>
+            <a href="#" onClick={() => (user !== null) && setShowModal('settings')}>
+              <Gear />
             </a>
           </div>
         </div>
@@ -118,8 +112,10 @@ function App() {
           Copyright © 2023 Made by Gamekoff
         </div>
       </div>
-      {showUserModal && 
-        <UserModal setUser={_setUserCallback} setShowUserModal={_setShowUserModalCallback} setMessage={_setMessageCallback} />}
+      {showModal === 'user' && 
+        <UserModal hideModal={() => setShowModal(null)} setUser={user => setUser(user)} setMessage={_setMessageCallback} />}
+      {showModal === 'settings' &&
+        <SettingsModal hideModal={() => setShowModal(null)} user={user as NonNullable<UserInterface>} />}
     </div>
   );
 }

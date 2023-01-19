@@ -4,10 +4,10 @@ import './Modal.scss'
 
 interface Props {
   title: string,
-  titleLoading: string,
+  titleLoading?: string,
   okClicked: (setLoading: (loading: boolean) => void) => void,
   cancelClicked: () => void,
-  isDisabled: () => boolean,
+  isDisabled?: () => boolean,
   children: any
 }
 
@@ -43,7 +43,7 @@ function Modal(props: Props) {
           {loading ? <div className="spinner-border" /> : props.children}
         </div>
         <div className="modal-window-footer themed">
-          <button ref={okButtonRef} className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.okClicked(setLoadingCallback)} disabled={props.isDisabled()}>OK</button>
+          <button ref={okButtonRef} className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.okClicked(setLoadingCallback)} disabled={props.isDisabled && props.isDisabled()}>OK</button>
           <button ref={cancelButtonRef} className={`btn btn-sm btn-link ${loading ? 'd-none' : ''}`} onClick={() => props.cancelClicked()}>CANCEL</button>
         </div>
       </div>
