@@ -1,18 +1,21 @@
 import './App.scss';
 import './context/ThemeContext.scss';
 import { useState, useEffect, useRef } from 'react';
+import { useUpdateEffect } from './custom_hook/useUpdateEffect';
 import { UserModal } from './modal/UserModal'
 import { UserInterface } from './modal/UserInterface';
 import { Toast } from './toast/Toast'
 import { MessageInterface } from './toast/MessageInterface';
 import { TodoListContainer } from './todo_list/TodoListContainer';
 import _ from 'lodash';
-import { BoxArrowLeft, Gear } from 'react-bootstrap-icons';
+import { BoxArrowLeft, Gear, Github } from 'react-bootstrap-icons';
 import { SettingsModal } from './modal/SettingsModal';
+import { TodoLiteral, DiaryLiteral, WeeklyLiteral, SettingsInterface } from './modal/SettingsInterface';
 
 function App() {
   const [timer, setTimer] = useState(_parseDate(new Date()))
   const [user, setUser] = useState<UserInterface | null>(null)
+  const [type, setType] = useState<'todo' | 'diary' | 'weekly' | null>(null)
   const [showModal, setShowModal] = useState<'user' | 'settings' | null>(null)
   const [message, setMessage] = useState<MessageInterface>({ text: '', type: 'warning' })
   const [darkTheme, setDarkTheme] = useState(false)
@@ -54,6 +57,32 @@ function App() {
       sessionStorage.removeItem('darkTheme')
     }
   }, [darkTheme])
+
+  useUpdateEffect(() => {
+    if (user !== null) {
+      const typeSaved = sessionStorage.getItem(user.login + 'Type')
+      if (typeSaved === DiaryLiteral) {
+        setType(DiaryLiteral)
+      }
+      else if (typeSaved === WeeklyLiteral) {
+        setType(WeeklyLiteral)
+      }
+      else {
+        setType(TodoLiteral)
+      }
+    }
+  }, [user])
+
+  useUpdateEffect(() => {
+    if (user !== null) {
+      if (type === TodoLiteral) {
+        sessionStorage.removeItem(user.login + 'Type')
+      }
+      else {
+        sessionStorage.setItem(user.login + 'Type', type as NonNullable<typeof type>)
+      }
+    }
+  }, [type])
 
   useEffect(() => {
     lastMessageRef.current = message
@@ -109,13 +138,13 @@ function App() {
           <TodoListContainer user={user} />
         </div>
         <div className="layout-footer">
-          Copyright © 2023 Made by Gamekoff
+          Copyright&nbsp;<Github />&nbsp;2023 Made by Gamekoff
         </div>
       </div>
       {showModal === 'user' && 
         <UserModal hideModal={() => setShowModal(null)} setUser={user => setUser(user)} setMessage={_setMessageCallback} />}
       {showModal === 'settings' &&
-        <SettingsModal hideModal={() => setShowModal(null)} user={user as NonNullable<UserInterface>} />}
+        <SettingsModal hideModal={() => setShowModal(null)} user={user as NonNullable<UserInterface>} type={type} setType={type => setType(type)}/>}
     </div>
   );
 }
