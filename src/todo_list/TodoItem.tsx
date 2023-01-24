@@ -3,7 +3,7 @@ import { useUpdateEffect } from '../custom_hook/useUpdateEffect';
 import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
 import { TodoItemInterface } from './TodoItemInterface';
 import './TodoItem.scss';
-import { Pencil, Trash3 } from 'react-bootstrap-icons';
+import { Pencil, PencilFill, Trash3 } from 'react-bootstrap-icons';
 
 interface Props {
   todoItem: TodoItemInterface,
@@ -38,12 +38,14 @@ function TodoItem (props: Props) {
         className="form-check-input me-2" checked={props.todoItem.checked} 
         onChange={() => props.changeTodoItem(props.todoItem.label, !props.todoItem.checked)} />
       {edit ?
-        <input type="text" className="form-control w-auto" ref={labelInputRef} value={props.todoItem.label}
+        <input type="text" className="form-control form-control-sm w-auto" ref={labelInputRef} value={props.todoItem.label} size={props.todoItem.label.length}
           onChange={event => props.changeTodoItem(event.target.value, props.todoItem.checked)} /> :
         <label htmlFor={`itemCheckbox${props.todoItem.id}`} className={`form-check-label ${props.todoItem.checked ? 'todo-item-label-checked' : ''}`}>{props.todoItem.label}</label>}
       <div className="flex-grow-1" />
       <a href="#" className="todo-item-layout-button ms-3" onClick={() => setEdit(!edit)}>
-        <Pencil />
+        {edit ?
+          <PencilFill /> :
+          <Pencil />}
       </a>
       <a href="#" className="todo-item-layout-button additional-margin" onClick={() => props.deleteTodoItem()}>
         <Trash3 />

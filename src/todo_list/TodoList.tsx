@@ -6,7 +6,7 @@ import { TodoItemInterface } from './TodoItemInterface';
 import { TodoItem } from './TodoItem';
 import './TodoList.scss'
 import axios from 'axios';
-import { Pencil, Trash3, PlusSquare } from 'react-bootstrap-icons';
+import { Pencil, PencilFill, Trash3, PlusSquare } from 'react-bootstrap-icons';
 
 interface Props {
   todoList: TodoListInterface,
@@ -116,12 +116,14 @@ function TodoList (props: Props) {
           <h5 className="card-title user-select-none">
             <div className="card-title-layout">
               {edit ? 
-                <input type="text" className="form-control" ref={titleInputRef} value={props.todoList.title}
+                <input type="text" className="form-control font-control-sm" ref={titleInputRef} value={props.todoList.title} size={props.todoList.title.length}
                   onChange={event => props.changeTodoList(event.target.value)} /> :
                 props.todoList.title}
-              <div className="flex-grow-1" />
+              <div className="flex-grow-1"></div>
               <a href="#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
-                <Pencil />
+                {edit ? 
+                  <PencilFill /> :
+                  <Pencil />}
               </a>
               <a href="#" className="card-title-layout-button additional-margin" onClick={() => props.deleteTodoList()}>
                 <Trash3 />

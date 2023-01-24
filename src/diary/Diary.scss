@@ -1,0 +1,35 @@
+.card {
+  .card-body {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .card-title-layout {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      margin-bottom: 20px;
+    
+      .card-title-layout-button {
+        font-size: medium;
+        visibility: hidden;
+  
+        &.additional-margin {
+          margin-left: 4px;
+        }
+      }
+    }
+  
+    &:hover {
+      .card-title-layout {
+        .card-title-layout-button {
+          visibility: visible;
+        }
+      }
+    }
+  
+    .diary-text {
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+  }
+}

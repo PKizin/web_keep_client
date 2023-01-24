@@ -7,6 +7,7 @@ import { UserInterface } from './modal/UserInterface';
 import { Toast } from './toast/Toast'
 import { MessageInterface } from './toast/MessageInterface';
 import { TodoListContainer } from './todo_list/TodoListContainer';
+import { DiaryContainer } from './diary/DiaryContainer';
 import _ from 'lodash';
 import { BoxArrowLeft, Gear, Github } from 'react-bootstrap-icons';
 import { SettingsModal } from './modal/SettingsModal';
@@ -135,7 +136,9 @@ function App() {
         </div>
         <div className="layout-body">
           <Toast {...message} />
-          <TodoListContainer user={user} />
+          {type === TodoLiteral ? 
+            <TodoListContainer user={user} /> :
+            <DiaryContainer user={user} />}
         </div>
         <div className="layout-footer">
           Copyright&nbsp;<Github />&nbsp;2023 Made by Gamekoff
