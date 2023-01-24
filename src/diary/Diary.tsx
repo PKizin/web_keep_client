@@ -27,14 +27,14 @@ function Diary (props: Props) {
   }, [date])
 
   useUpdateEffect(() => {
-    _postDiary()
-  }, [text])
-
-  useUpdateEffect(() => {
     if (edit) {
       _focusEdit()
     }
   }, [edit])
+
+  useUpdatePropEffect(() => {
+    _postDiary()
+  }, [text])
 
   useUpdatePropEffect(() => {
     setDate(new Date(date.getTime() - 1000 * 60 * 60 * 24))
@@ -81,7 +81,8 @@ function Diary (props: Props) {
   }
 
   function _getDiary () {
-    axios
+    setLoading(true)
+    setTimeout(() => axios
       .get('http://localhost:3001/diary', {
         params: {
           user_id: props.user.id,
@@ -96,6 +97,9 @@ function Diary (props: Props) {
           setText('')
         }
       })
+      .finally(() => {
+        setLoading(false)
+      }), 100)
   }
 
   function _postDiary () {
@@ -131,7 +135,9 @@ function Diary (props: Props) {
             <textarea className="form-control flex-grow-1" ref={textareaRef} value={text} onChange={event => setText(event.target.value)} placeholder="Write your data..." />
             <div className="form-text">Data will be saved authomatically...</div>
           </> :
-          <div className="diary-text">{text}</div>}
+          loading ?
+            <div className="spinner-border spinner-border-sm" /> :
+            <div className="diary-text">{text}</div>}
       </div>
     </div>
   )
