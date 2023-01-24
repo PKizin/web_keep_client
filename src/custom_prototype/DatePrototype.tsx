@@ -1,8 +1,9 @@
 declare global {
   interface Date {
     monthNames: string[],
+    dayNames: string[],
     getMonthName: () => string,
-    getShortMonthName: () => string
+    getDayName: () => string
   }
 }
 
@@ -13,12 +14,18 @@ Date.prototype.monthNames = [
   "October", "November", "December"
 ];
 
+Date.prototype.dayNames = [
+  "Sunday", "Monday", "Tuesday",
+  "Wednesday", "Thursday", "Friday",
+  "Saturday"
+];
+
 Date.prototype.getMonthName = function() {
   return this.monthNames[this.getMonth()];
 };
 
-Date.prototype.getShortMonthName = function () {
-  return this.getMonthName().substr(0, 3);
-};
+Date.prototype.getDayName = function () {
+  return this.dayNames[this.getDay()];
+}
 
 export {}

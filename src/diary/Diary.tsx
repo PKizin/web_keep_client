@@ -55,11 +55,6 @@ function Diary (props: Props) {
     _closeEdit()
   }, [edit])
 
-  function _clearEdit () {
-    setText('')
-    _closeEdit()
-  }
-
   function _closeEdit () {
     if (edit) {
       setEdit(false)
@@ -114,7 +109,7 @@ function Diary (props: Props) {
   }
 
   return (
-    <div className="card w-50 themed">
+    <div className="card diary-card themed">
       <div className="card-body">
         <h5 className="card-title user-select-none">
           <div className="card-title-layout">
@@ -125,7 +120,7 @@ function Diary (props: Props) {
                 <PencilFill /> :
                 <Pencil />}
             </a>
-            <a href="#" className="card-title-layout-button additional-margin" onClick={() => _clearEdit()}>
+            <a href="#" className="card-title-layout-button additional-margin" onClick={() => { setText(''); _closeEdit() }}>
               <Trash3 />
             </a>
           </div>

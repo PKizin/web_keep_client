@@ -1,5 +1,6 @@
-.diary-card {
-  width: 50%;
+.weekly-card {
+  min-height: 150px;
+  height: fit-content !important;
 
   .card-body {
     display: flex;
@@ -9,7 +10,6 @@
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
-      margin-bottom: 20px;
     
       .card-title-layout-button {
         font-size: medium;
@@ -28,8 +28,8 @@
         }
       }
     }
-  
-    .diary-text {
+
+    .weekly-text {
       white-space: pre-wrap;
     }
   }

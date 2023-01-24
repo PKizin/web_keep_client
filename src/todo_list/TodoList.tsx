@@ -111,7 +111,7 @@ function TodoList (props: Props) {
   
   return (
     <div>
-      <div className="card themed">
+      <div className="card todo-card themed">
         <div className="card-body">
           <h5 className="card-title user-select-none">
             <div className="card-title-layout">
