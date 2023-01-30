@@ -15,7 +15,7 @@ interface Props {
   currentDateClicked: object
 }
 
-function Diary (props: Props) {
+function Diary (props: Props): JSX.Element {
   const [date, setDate] = useState(new Date())
   const [text, setText] = useState('')
   const [edit, setEdit] = useState(false)

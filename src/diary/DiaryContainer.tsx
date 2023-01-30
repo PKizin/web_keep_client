@@ -7,7 +7,7 @@ interface Props {
   user: UserInterface | null
 }
 
-function DiaryContainer (props: Props) {
+function DiaryContainer (props: Props): JSX.Element {
   const [previousDateClicked, setPreviousDateClicked] = useState({})
   const [nextDateClicked, setNextDateClicked] = useState({})
   const [currentDateClicked, setCurrentDateClicked] = useState({})

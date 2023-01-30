@@ -14,7 +14,7 @@ import { BoxArrowLeft, Gear, Github } from 'react-bootstrap-icons';
 import { SettingsModal } from './modal/SettingsModal';
 import { TodoLiteral, DiaryLiteral, WeeklyLiteral, SettingsInterface } from './modal/SettingsInterface';
 
-function App() {
+function App(): JSX.Element {
   const [timer, setTimer] = useState(_parseDate(new Date()))
   const [user, setUser] = useState<UserInterface | null>(null)
   const [type, setType] = useState<'todo' | 'diary' | 'weekly' | null>(null)

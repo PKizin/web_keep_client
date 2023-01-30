@@ -15,7 +15,7 @@ interface Props {
   deleteTodoList: () => void
 }
 
-function TodoList (props: Props) {
+function TodoList (props: Props): JSX.Element {
   const [loading, setLoading] = useState(false)
   const [edit, setEdit] = useState<boolean>(false)
   const [todoItems, setTodoItems] = useState<TodoItemInterface[]>([])

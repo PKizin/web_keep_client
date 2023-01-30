@@ -13,7 +13,7 @@ interface Props {
 
 const Days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-function Weekly (props: Props) {
+function Weekly (props: Props): JSX.Element {
   const [text, setText] = useState('')
   const [edit, setEdit] = useState(false)
   const [loading, setLoading] = useState(false)

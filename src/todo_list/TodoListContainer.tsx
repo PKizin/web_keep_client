@@ -10,7 +10,7 @@ interface Props {
   user: UserInterface | null
 }
 
-function TodoListContainer (props: Props) {
+function TodoListContainer (props: Props): JSX.Element {
   const [todoLists, setTodoLists] = useState<TodoListInterface[]>([])
   const [loading, setLoading] = useState(false)
 

@@ -7,7 +7,7 @@ interface Props {
   user: UserInterface | null
 }
 
-function WeeklyContainer (props: Props) {
+function WeeklyContainer (props: Props): JSX.Element {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

@@ -12,7 +12,7 @@ interface Props {
   deleteTodoItem: () => void
 }
 
-function TodoItem (props: Props) {
+function TodoItem (props: Props): JSX.Element {
   const [edit, setEdit] = useState<boolean>(false)
   const labelInputRef = useRef<HTMLInputElement>(null)
 
