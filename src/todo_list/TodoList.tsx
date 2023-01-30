@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { useUpdateEffect } from '../custom_hook/useUpdateEffect';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
 import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
 import { TodoListInterface } from './TodoListInterface';
 import { TodoItemInterface } from './TodoItemInterface';
@@ -10,68 +10,29 @@ import { Pencil, PencilFill, Trash3, PlusSquare } from 'react-bootstrap-icons';
 
 interface Props {
   todoList: TodoListInterface,
-  changeTodoList: (title: string) => void,
-  postTodoList: () => void,
-  deleteTodoList: () => void
+  changeTodoList: (todoList: TodoListInterface, title: string) => void,
+  postTodoList: (todoList: TodoListInterface) => void,
+  deleteTodoList: (todoList: TodoListInterface) => void
 }
 
 function TodoList (props: Props): JSX.Element {
   const [loading, setLoading] = useState(false)
   const [edit, setEdit] = useState<boolean>(false)
   const [todoItems, setTodoItems] = useState<TodoItemInterface[]>([])
+  const todoItemsRef = useRef<TodoItemInterface[]>([])
   const titleInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (!props.todoList.isNew) {
-      _getTodoItems()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (edit) {
-      titleInputRef.current!.focus()
-    }
-  }, [edit])
-
-  useKeyupEffect(titleInputRef, ['Enter', 'Escape'], () => {
-    if (edit) {
-      setEdit(false)
-    }
-  }, [edit])
-
-  useUpdateEffect(() => {
-    props.postTodoList()
-  }, [props.todoList.title])
-
-  function _getTodoItems () {
-    setLoading(true)
-    setTimeout(() => axios
-      .get('http://localhost:3001/todo_item', {
-        params: {
-          id: props.todoList.id
-        }
-      })
-      .then(response => {
-        if (response && response.data) {
-          setTodoItems(response.data)
-        }
-      })
-      .finally(() => {
-        setLoading(false)
-      }), 100)
-  }
-
-  function _changeTodoItem (todoItem: TodoItemInterface, label: string, checked: boolean) {
-    let newTodoItems = todoItems.slice()
+  const changeTodoItemCallback = useCallback((todoItem: TodoItemInterface, label: string, checked: boolean) => {
+    let newTodoItems = todoItemsRef.current.slice()
     let newTodoItem = newTodoItems.find(i => i.id === todoItem.id)
     if (newTodoItem) {
       newTodoItem.label = label
       newTodoItem.checked = checked
       setTodoItems(newTodoItems)
     }
-  }
+  }, [])
 
-  function _postTodoItem (todoItem: TodoItemInterface) {
+  const postTodoItemCallback = useCallback((todoItem: TodoItemInterface) => {
     axios
       .post('http://localhost:3001/todo_item', null, {
         params: {
@@ -80,9 +41,9 @@ function TodoList (props: Props): JSX.Element {
           checked: todoItem.checked
         }
       })
-  }
+  }, [])
 
-  function _deleteTodoItem (todoItem: TodoItemInterface) {
+  const deleteTodoItemCallback = useCallback((todoItem: TodoItemInterface) => {
     axios
       .delete('http://localhost:3001/todo_item', {
         params: {
@@ -90,9 +51,49 @@ function TodoList (props: Props): JSX.Element {
         }
       })
       .then(() => {
-        setTodoItems(todoItems.filter(i => i.id !== todoItem.id))
+        setTodoItems(todoItemsRef.current.filter(i => i.id !== todoItem.id))
       })
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!props.todoList.isNew) {
+      setLoading(true)
+      setTimeout(() => axios
+        .get('http://localhost:3001/todo_item', {
+          params: {
+            id: props.todoList.id
+          }
+        })
+        .then(response => {
+          if (response && response.data) {
+            setTodoItems(response.data)
+          }
+        })
+        .finally(() => {
+          setLoading(false)
+        }), 100)
+    }
+  }, [props.todoList.id, props.todoList.isNew])
+
+  useEffect(() => {
+    if (edit && titleInputRef.current) {
+      titleInputRef.current.focus()
+    }
+  }, [edit])
+
+  useEffect(() => {
+    todoItemsRef.current = todoItems
+  }, [todoItems])
+
+  useKeyupEffect(titleInputRef, ['Enter', 'Escape'], () => {
+    if (edit) {
+      setEdit(false)
+    }
+  }, [edit])
+
+  useUpdatePropEffect(() => {
+    props.postTodoList(props.todoList)
+  }, [props.todoList.title])
 
   function _putTodoItem () {
     axios
@@ -116,16 +117,17 @@ function TodoList (props: Props): JSX.Element {
           <h5 className="card-title user-select-none">
             <div className="card-title-layout">
               {edit ? 
-                <input type="text" className="form-control font-control-sm" ref={titleInputRef} value={props.todoList.title} size={props.todoList.title.length}
-                  onChange={event => props.changeTodoList(event.target.value)} /> :
+                <input type="text" className="form-control font-control-sm" ref={titleInputRef} 
+                  value={props.todoList.title} size={props.todoList.title.length}
+                  onChange={event => props.changeTodoList(props.todoList, event.target.value)} /> :
                 props.todoList.title}
               <div className="flex-grow-1"></div>
-              <a href="#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
+              <a href="/#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
                 {edit ? 
                   <PencilFill /> :
                   <Pencil />}
               </a>
-              <a href="#" className="card-title-layout-button additional-margin" onClick={() => props.deleteTodoList()}>
+              <a href="/#" className="card-title-layout-button additional-margin" onClick={() => props.deleteTodoList(props.todoList)}>
                 <Trash3 />
               </a>
             </div>
@@ -136,10 +138,10 @@ function TodoList (props: Props): JSX.Element {
               <>
                 {todoItems.filter(todoItem => !todoItem.checked).map(todoItem =>
                   <TodoItem todoItem={todoItem} key={todoItem.id}
-                    changeTodoItem={(label, checked) => _changeTodoItem(todoItem, label, checked)}
-                    postTodoItem={() => _postTodoItem(todoItem)}
-                    deleteTodoItem={() => _deleteTodoItem(todoItem)} />)}
-                <a href="#" onClick={() => _putTodoItem()}>
+                    changeTodoItem={changeTodoItemCallback}
+                    postTodoItem={postTodoItemCallback}
+                    deleteTodoItem={deleteTodoItemCallback} />)}
+                <a href="/#" onClick={() => _putTodoItem()}>
                   <PlusSquare />
                 </a>
                 {todoItems.some(i => i.checked) ? 
@@ -147,9 +149,9 @@ function TodoList (props: Props): JSX.Element {
                     <hr />
                     {todoItems.filter(todoItem => todoItem.checked).map(todoItem => 
                       <TodoItem todoItem={todoItem} key={todoItem.id}
-                      changeTodoItem={(label, checked) => _changeTodoItem(todoItem, label, checked)}
-                      postTodoItem={() => _postTodoItem(todoItem)}
-                      deleteTodoItem={() => _deleteTodoItem(todoItem)} />)}
+                      changeTodoItem={changeTodoItemCallback}
+                      postTodoItem={postTodoItemCallback}
+                      deleteTodoItem={deleteTodoItemCallback} />)}
                   </> : ''}
               </>}
           </div>

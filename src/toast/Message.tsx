@@ -15,7 +15,7 @@ function Message(props: Props) {
           {props.message.text}
         </div>
         <div>
-          <a href="#" onClick={() => props.onDelete(props.message)}>
+          <a href="/#" onClick={() => props.onDelete(props.message)}>
             <XLg size={24}/>
           </a>
         </div>

@@ -85,12 +85,12 @@ function Weekly (props: Props): JSX.Element {
           <div className="card-title-layout">
             {Days[props.day]}
             <div className="flex-grow-1" />
-            <a href="#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
+            <a href="/#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
               {edit ?
                 <PencilFill /> :
                 <Pencil />}
             </a>
-            <a href="#" className="card-title-layout-button additional-margin" onClick={() => { setText(''); _closeEdit() }}>
+            <a href="/#" className="card-title-layout-button additional-margin" onClick={() => { setText(''); _closeEdit() }}>
               <Trash3 />
             </a>
           </div>

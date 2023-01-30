@@ -1,7 +1,6 @@
 import './App.scss';
 import './context/ThemeContext.scss';
-import { useState, useEffect, useRef } from 'react';
-import { useUpdateEffect } from './custom_hook/useUpdateEffect';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { UserModal } from './modal/UserModal'
 import { UserInterface } from './modal/UserInterface';
 import { Toast } from './toast/Toast'
@@ -9,19 +8,22 @@ import { MessageInterface } from './toast/MessageInterface';
 import { TodoListContainer } from './todo_list/TodoListContainer';
 import { DiaryContainer } from './diary/DiaryContainer';
 import { WeeklyContainer } from './weekly/WeeklyContainer';
-import _ from 'lodash';
 import { BoxArrowLeft, Gear, Github } from 'react-bootstrap-icons';
 import { SettingsModal } from './modal/SettingsModal';
 import { TodoLiteral, DiaryLiteral, WeeklyLiteral, SettingsInterface } from './modal/SettingsInterface';
+import { Timer } from './timer/Timer';
 
 function App(): JSX.Element {
-  const [timer, setTimer] = useState(_parseDate(new Date()))
   const [user, setUser] = useState<UserInterface | null>(null)
-  const [type, setType] = useState<'todo' | 'diary' | 'weekly' | null>(null)
+  const [type, setType] = useState<SettingsInterface>(TodoLiteral)
   const [showModal, setShowModal] = useState<'user' | 'settings' | null>(null)
   const [message, setMessage] = useState<MessageInterface>({ text: '', type: 'warning' })
   const [darkTheme, setDarkTheme] = useState(false)
   const lastMessageRef = useRef<MessageInterface>({ text: '', type: 'warning' })
+
+  const setMessageCallback = useCallback((message_: MessageInterface) => {
+    setMessage({ id: lastMessageRef.current.id === undefined ? 0 : lastMessageRef.current.id + 1, ...message_ })
+  }, [])
 
   useEffect(() => {
     const userSaved = sessionStorage.getItem('user')
@@ -35,11 +37,6 @@ function App(): JSX.Element {
     if (darkThemeSaved !== null) {
       setDarkTheme(darkThemeSaved === 'true')
     }
-  }, [])
-
-  useEffect(() => {
-    const timerInterval = setInterval(() => setTimer(_parseDate(new Date())), 1000)
-    return () => clearInterval(timerInterval)
   }, [])
 
   useEffect(() => {
@@ -60,7 +57,7 @@ function App(): JSX.Element {
     }
   }, [darkTheme])
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     if (user !== null) {
       const typeSaved = sessionStorage.getItem(user.login + 'Type')
       if (typeSaved === DiaryLiteral) {
@@ -69,13 +66,10 @@ function App(): JSX.Element {
       else if (typeSaved === WeeklyLiteral) {
         setType(WeeklyLiteral)
       }
-      else {
-        setType(TodoLiteral)
-      }
     }
   }, [user])
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     if (user !== null) {
       if (type === TodoLiteral) {
         sessionStorage.removeItem(user.login + 'Type')
@@ -84,7 +78,7 @@ function App(): JSX.Element {
         sessionStorage.setItem(user.login + 'Type', type as NonNullable<typeof type>)
       }
     }
-  }, [type])
+  }, [user, type])
 
   useEffect(() => {
     lastMessageRef.current = message
@@ -98,16 +92,8 @@ function App(): JSX.Element {
     return [username, password]
   }*/
 
-  function _setMessageCallback(message_: MessageInterface) {
-    setMessage({ id: lastMessageRef.current.id === undefined ? 0 : lastMessageRef.current.id + 1, ... message_ })
-  }
-
-  function _parseDate(date: Date) {
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
-  }
-
-  function _logout() {
-    _setMessageCallback({ text: `User "${user!.login}" logged out`, type: 'success' })
+  function _logout () {
+    setMessageCallback({ text: `User "${user!.login}" logged out`, type: 'success' })
     setUser(null)
   }
 
@@ -116,7 +102,7 @@ function App(): JSX.Element {
       <div className="layout-root themed">
         <div className="layout-header">
           <div className="layout-header-timer">
-            {timer}
+            <Timer />
           </div>
           <div className="form-check form-switch layout-header-switch">
             <input id="themeSwitch" type="checkbox" className="form-check-input layout-header-switch-input" checked={darkTheme} onChange={() => setDarkTheme(!darkTheme)} />
@@ -124,19 +110,19 @@ function App(): JSX.Element {
           </div>
           <div className="flex-grow-1" />
           <div className="layout-header-auth">
-            <a href="#" className="layout-header-user" onClick={() => setShowModal('user')}>
+            <a href="/#" className="layout-header-user" onClick={() => setShowModal('user')}>
               {user === null ? 'guest' : user.login}
             </a>
-            <a href="#" onClick={() => (user !== null) && _logout()}>
+            <a href="/#" onClick={() => (user !== null) && _logout()}>
               <BoxArrowLeft />
             </a>
-            <a href="#" onClick={() => (user !== null) && setShowModal('settings')}>
+            <a href="/#" onClick={() => (user !== null) && setShowModal('settings')}>
               <Gear />
             </a>
           </div>
         </div>
         <div className="layout-body">
-          <Toast {...message} />
+          <Toast message={message} />
           {type === TodoLiteral ? 
             <TodoListContainer user={user} /> :
             type === DiaryLiteral ?
@@ -148,7 +134,7 @@ function App(): JSX.Element {
         </div>
       </div>
       {showModal === 'user' && 
-        <UserModal hideModal={() => setShowModal(null)} setUser={user => setUser(user)} setMessage={_setMessageCallback} />}
+        <UserModal hideModal={() => setShowModal(null)} setUser={user => setUser(user)} setMessage={setMessageCallback} />}
       {showModal === 'settings' &&
         <SettingsModal hideModal={() => setShowModal(null)} user={user as NonNullable<UserInterface>} type={type} setType={type => setType(type)}/>}
     </div>

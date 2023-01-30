@@ -26,13 +26,13 @@ function DiaryContainer (props: Props): JSX.Element {
             <div className="spinner-border" /> :
             <>
               <Diary user={props.user} previosDateClicked={previousDateClicked} nextDateClicked={nextDateClicked} currentDateClicked={currentDateClicked} />
-              <a href="#" onClick={() => setPreviousDateClicked({})}>
+              <a href="/#" onClick={() => setPreviousDateClicked({})}>
                 <ChevronLeft size={32} />
               </a>
-              <a href="#" onClick={() => setNextDateClicked({})}>
+              <a href="/#" onClick={() => setNextDateClicked({})}>
                 <ChevronRight size={32} />
               </a>
-              <a href="#" onClick={() => setCurrentDateClicked({})}>
+              <a href="/#" onClick={() => setCurrentDateClicked({})}>
                 <ArrowClockwise size={32} />
               </a>
             </>}

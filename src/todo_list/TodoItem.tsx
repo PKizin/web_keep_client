@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useUpdateEffect } from '../custom_hook/useUpdateEffect';
+import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
 import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
 import { TodoItemInterface } from './TodoItemInterface';
 import './TodoItem.scss';
@@ -7,9 +7,9 @@ import { Pencil, PencilFill, Trash3 } from 'react-bootstrap-icons';
 
 interface Props {
   todoItem: TodoItemInterface,
-  changeTodoItem: (label: string, checked: boolean) => void,
-  postTodoItem: () => void,
-  deleteTodoItem: () => void
+  changeTodoItem: (todoItem: TodoItemInterface, label: string, checked: boolean) => void,
+  postTodoItem: (todoItem: TodoItemInterface) => void,
+  deleteTodoItem: (todoItem: TodoItemInterface) => void
 }
 
 function TodoItem (props: Props): JSX.Element {
@@ -28,26 +28,26 @@ function TodoItem (props: Props): JSX.Element {
     }
   }, [edit])
 
-  useUpdateEffect(() => {
-    props.postTodoItem()
+  useUpdatePropEffect(() => {
+    props.postTodoItem(props.todoItem)
   }, [props.todoItem.label, props.todoItem.checked])
 
   return (
     <div className="todo-item-layout">
       <input id={`itemCheckbox${props.todoItem.id}`} type="checkbox" 
         className="form-check-input me-2" checked={props.todoItem.checked} 
-        onChange={() => props.changeTodoItem(props.todoItem.label, !props.todoItem.checked)} />
+        onChange={() => props.changeTodoItem(props.todoItem, props.todoItem.label, !props.todoItem.checked)} />
       {edit ?
         <input type="text" className="form-control form-control-sm w-auto" ref={labelInputRef} value={props.todoItem.label} size={props.todoItem.label.length}
-          onChange={event => props.changeTodoItem(event.target.value, props.todoItem.checked)} /> :
+          onChange={event => props.changeTodoItem(props.todoItem, event.target.value, props.todoItem.checked)} /> :
         <label htmlFor={`itemCheckbox${props.todoItem.id}`} className={`form-check-label ${props.todoItem.checked ? 'todo-item-label-checked' : ''}`}>{props.todoItem.label}</label>}
       <div className="flex-grow-1" />
-      <a href="#" className="todo-item-layout-button ms-3" onClick={() => setEdit(!edit)}>
+      <a href="/#" className="todo-item-layout-button ms-3" onClick={() => setEdit(!edit)}>
         {edit ?
           <PencilFill /> :
           <Pencil />}
       </a>
-      <a href="#" className="todo-item-layout-button additional-margin" onClick={() => props.deleteTodoItem()}>
+      <a href="/#" className="todo-item-layout-button additional-margin" onClick={() => props.deleteTodoItem(props.todoItem)}>
         <Trash3 />
       </a>
     </div>
