@@ -22,7 +22,7 @@ function TodoItem (props: Props): JSX.Element {
     }
   }, [edit])
 
-  useKeyupEffect(labelInputRef, ['Enter', 'Escape'], () => {
+  useKeyupEffect(labelInputRef.current!, ['Enter', 'Escape'], () => {
     if (edit) {
       setEdit(false)
     }

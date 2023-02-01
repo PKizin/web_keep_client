@@ -39,7 +39,7 @@ function Weekly (props: Props): JSX.Element {
     _postWeekly()
   }, [text])
 
-  useKeyupEffect(textareaRef, ['Escape'], () => {
+  useKeyupEffect(textareaRef.current!, ['Escape'], () => {
     _closeEdit()
   }, [edit])
 

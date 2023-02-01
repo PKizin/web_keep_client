@@ -17,13 +17,13 @@ function Modal(props: Props) {
   const cancelButtonRef = useRef<HTMLButtonElement>(null)
   const windowRef = useRef<HTMLDivElement>(null)
 
-  useKeyupEffect(windowRef, ['Enter'], () => {
+  useKeyupEffect(windowRef.current!, ['Enter'], () => {
     if (okButtonRef.current) {
       okButtonRef.current.click()
     }
   }, [])
 
-  useKeyupEffect(windowRef, ['Escape'], () => {
+  useKeyupEffect(windowRef.current!, ['Escape'], () => {
     if (cancelButtonRef.current) {
       cancelButtonRef.current.click()
     }

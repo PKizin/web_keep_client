@@ -1,18 +1,19 @@
-import { RefObject, useEffect } from "react";
+import React, { useEffect } from "react";
 
-function useKeyupEffect<T extends HTMLElement> (ref: RefObject<T>, keys: string[], effect: () => void, dependencies: any[]) {
+function useKeyupEffect<T extends HTMLElement> (element: T, keys: string[], effect: () => void, dependencies: React.DependencyList | undefined) {
 
   useEffect(() => {
-    if (ref.current) {
+    console.log('useKeyupEffect hook')
+    if (element) {
       const listener = (event: KeyboardEvent) => {
         if (keys.includes(event.key)) {
           effect()
         }
       }
-      ref.current.addEventListener('keyup', listener)
-      return () => ref.current?.removeEventListener('keyup', listener)
+      element.addEventListener('keyup', listener)
+      return () => element.removeEventListener('keyup', listener)
     }
-  }, dependencies)
+  }, [dependencies, element, keys, effect])
 }
 
 export { useKeyupEffect }

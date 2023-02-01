@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useUpdateEffect } from '../custom_hook/useUpdateEffect';
 import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
 import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
@@ -51,7 +51,7 @@ function Diary (props: Props): JSX.Element {
     _focusEdit()
   }, [props.currentDateClicked])
 
-  useKeyupEffect(textareaRef, ['Escape'], () => {
+  useKeyupEffect(textareaRef.current!, ['Escape'], () => {
     _closeEdit()
   }, [edit])
 

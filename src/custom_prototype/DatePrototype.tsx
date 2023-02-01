@@ -1,3 +1,4 @@
+/* eslint-disable no-extend-native */
 declare global {
   interface Date {
     monthNames: string[],
