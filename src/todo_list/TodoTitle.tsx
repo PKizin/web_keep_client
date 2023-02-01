@@ -21,7 +21,7 @@ function TodoTitle (props: Props) {
     }
   }, [edit])
 
-  useKeyupEffect(titleInputRef.current!, ['Enter', 'Escape'], () => {
+  useKeyupEffect(titleInputRef, ['Enter', 'Escape'], () => {
     if (edit) {
       setEdit(false)
     }

@@ -31,43 +31,25 @@ function Weekly (props: Props): JSX.Element {
 
   useEffect(() => {
     if (loading) {
-      setTimeout(() => _getWeekly(), 100)
+      setTimeout(() => axios
+        .get('http://localhost:3001/weekly', {
+          params: {
+            user_id: props.user.id,
+            day: props.day
+          }
+        })
+        .then(response => {
+          if (response && response.data && response.data.length > 0) {
+            setText(response.data[0].text)
+          }
+        })
+        .finally(() => {
+          setLoading(false)
+        }), 100)
     }
-  }, [loading])
+  }, [loading, props.user.id, props.day])
 
   useUpdatePropEffect(() => {
-    _postWeekly()
-  }, [text])
-
-  useKeyupEffect(textareaRef.current!, ['Escape'], () => {
-    _closeEdit()
-  }, [edit])
-
-  function _closeEdit () {
-    if (edit) {
-      setEdit(false)
-    }
-  }
-
-  function _getWeekly () {
-    axios
-      .get('http://localhost:3001/weekly', {
-        params: {
-          user_id: props.user.id,
-          day: props.day
-        }
-      })
-      .then(response => {
-        if (response && response.data && response.data.length > 0) {
-          setText(response.data[0].text)
-        }
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
-
-  function _postWeekly () {
     axios
       .post('http://localhost:3001/weekly', null, {
         params: {
@@ -76,7 +58,11 @@ function Weekly (props: Props): JSX.Element {
           text: text
         }
       })
-  }
+  }, [text])
+
+  useKeyupEffect(textareaRef, ['Escape'], () => {
+    setEdit(false)
+  }, [edit])
 
   return (
     <div className="card weekly-card themed">
@@ -90,7 +76,7 @@ function Weekly (props: Props): JSX.Element {
                 <PencilFill /> :
                 <Pencil />}
             </a>
-            <a href="/#" className="card-title-layout-button additional-margin" onClick={() => { setText(''); _closeEdit() }}>
+            <a href="/#" className="card-title-layout-button additional-margin" onClick={() => { setText(''); setEdit(false) }}>
               <Trash3 />
             </a>
           </div>

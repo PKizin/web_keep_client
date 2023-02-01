@@ -1,19 +1,19 @@
-import React, { useEffect } from "react";
+import { RefObject, useEffect } from "react";
 
-function useKeyupEffect<T extends HTMLElement> (element: T, keys: string[], effect: () => void, dependencies: React.DependencyList | undefined) {
+function useKeyupEffect<T extends HTMLElement> (ref: RefObject<T>, keys: string[], effect: () => void, dependencies: any[]) {
 
   useEffect(() => {
-    console.log('useKeyupEffect hook')
-    if (element) {
+    if (ref.current) {
       const listener = (event: KeyboardEvent) => {
         if (keys.includes(event.key)) {
           effect()
         }
       }
-      element.addEventListener('keyup', listener)
-      return () => element.removeEventListener('keyup', listener)
+      ref.current.addEventListener('keyup', listener)
+      return () => ref!.current?.removeEventListener('keyup', listener)
     }
-  }, [dependencies, element, keys, effect])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, dependencies)
 }
 
 export { useKeyupEffect }

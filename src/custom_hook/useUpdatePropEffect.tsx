@@ -14,6 +14,7 @@ function useUpdatePropEffect (effect: () => void, dependencies: any[]) {
     else {
       effect()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies)
 }
 

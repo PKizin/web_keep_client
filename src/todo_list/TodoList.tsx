@@ -70,7 +70,8 @@ function TodoList (props: Props): JSX.Element {
           setLoading(false)
         }), 100)
     }
-  }, [props.todoList.id, props.todoList.isNew])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     todoItemsRef.current = todoItems

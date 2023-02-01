@@ -51,7 +51,7 @@ function Diary (props: Props): JSX.Element {
     _focusEdit()
   }, [props.currentDateClicked])
 
-  useKeyupEffect(textareaRef.current!, ['Escape'], () => {
+  useKeyupEffect(textareaRef, ['Escape'], () => {
     _closeEdit()
   }, [edit])
 

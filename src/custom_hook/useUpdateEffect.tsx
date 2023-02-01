@@ -10,6 +10,7 @@ function useUpdateEffect(effect: () => void, dependencies: any[]) {
     else {
       isMountedRef.current = true
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies)
 }
 

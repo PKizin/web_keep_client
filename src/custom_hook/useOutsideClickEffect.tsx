@@ -10,6 +10,7 @@ function useOutsideClickEffect<T extends HTMLElement> (ref: RefObject<T>, effect
     }
     document.addEventListener('mousedown', listener)
     return () => document.removeEventListener('mousedown', listener)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies)
 }
 
