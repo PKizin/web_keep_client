@@ -7,7 +7,7 @@ import { FilePlus } from 'react-bootstrap-icons';
 import './TodoListContainer.scss';
 
 interface Props {
-  user: UserInterface | null
+  user: UserInterface
 }
 
 function TodoListContainer (props: Props): JSX.Element {
@@ -94,20 +94,16 @@ function TodoListContainer (props: Props): JSX.Element {
 
   return (
     <>
-      {props.user === null ?
-        <h5>Hello, guest! Please sign up!</h5> :
-        <>
-          {todoLists.map(todoList => 
-            <TodoList todoList={todoList} key={todoList.id} 
-            changeTodoList={changeTodoListCallback}
-            postTodoList={postTodoListCallback}
-            deleteTodoList={deleteTodoListCallback} />)}
-          {loading ? 
-            <div className="spinner-border" /> :
-            <a href="/#" className="todo-list-container-button" onClick={() => _putTodoList()}>
-              <FilePlus size={32} />
-            </a>}
-        </>}
+      {todoLists.map(todoList => 
+        <TodoList todoList={todoList} key={todoList.id} 
+        changeTodoList={changeTodoListCallback}
+        postTodoList={postTodoListCallback}
+        deleteTodoList={deleteTodoListCallback} />)}
+      {loading ? 
+        <div className="spinner-border" /> :
+        <a href="/#" className="todo-list-container-button" onClick={() => _putTodoList()} data-testid="putTodoListButton">
+          <FilePlus size={32} />
+        </a>}
     </>
   )
 }

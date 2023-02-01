@@ -123,11 +123,13 @@ function App(): JSX.Element {
         </div>
         <div className="layout-body">
           <Toast message={message} />
-          {type === TodoLiteral ? 
-            <TodoListContainer user={user} /> :
-            type === DiaryLiteral ?
-              <DiaryContainer user={user} /> :
-              <WeeklyContainer user={user} />}
+          {user === null ?
+            <h5>Hello, guest! Please sign up!</h5> :
+            type === TodoLiteral ? 
+              <TodoListContainer user={user} /> :
+              type === DiaryLiteral ?
+                <DiaryContainer user={user} /> :
+                <WeeklyContainer user={user} />}
         </div>
         <div className="layout-footer">
           Copyright&nbsp;<Github />&nbsp;2023 Made by Gamekoff

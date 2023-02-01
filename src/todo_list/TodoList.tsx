@@ -119,15 +119,15 @@ function TodoList (props: Props): JSX.Element {
               {edit ? 
                 <input type="text" className="form-control font-control-sm" ref={titleInputRef} 
                   value={props.todoList.title} size={props.todoList.title.length}
-                  onChange={event => props.changeTodoList(props.todoList, event.target.value)} /> :
+                  onChange={event => props.changeTodoList(props.todoList, event.target.value)} data-testid="todoListTitleInput" /> :
                 props.todoList.title}
               <div className="flex-grow-1"></div>
-              <a href="/#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)}>
+              <a href="/#" className="card-title-layout-button ms-3" onClick={() => setEdit(!edit)} data-testid="setEditTodoListButton">
                 {edit ? 
                   <PencilFill /> :
                   <Pencil />}
               </a>
-              <a href="/#" className="card-title-layout-button additional-margin" onClick={() => props.deleteTodoList(props.todoList)}>
+              <a href="/#" className="card-title-layout-button additional-margin" onClick={() => props.deleteTodoList(props.todoList)} data-testid="deleteTodoListButton">
                 <Trash3 />
               </a>
             </div>
@@ -141,7 +141,7 @@ function TodoList (props: Props): JSX.Element {
                     changeTodoItem={changeTodoItemCallback}
                     postTodoItem={postTodoItemCallback}
                     deleteTodoItem={deleteTodoItemCallback} />)}
-                <a href="/#" onClick={() => _putTodoItem()}>
+                <a href="/#" onClick={() => _putTodoItem()} data-testid="putTodoItemButton">
                   <PlusSquare />
                 </a>
                 {todoItems.some(i => i.checked) ? 

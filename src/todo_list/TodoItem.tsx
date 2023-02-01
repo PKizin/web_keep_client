@@ -39,15 +39,15 @@ function TodoItem (props: Props): JSX.Element {
         onChange={() => props.changeTodoItem(props.todoItem, props.todoItem.label, !props.todoItem.checked)} />
       {edit ?
         <input type="text" className="form-control form-control-sm w-auto" ref={labelInputRef} value={props.todoItem.label} size={props.todoItem.label.length}
-          onChange={event => props.changeTodoItem(props.todoItem, event.target.value, props.todoItem.checked)} /> :
-        <label htmlFor={`itemCheckbox${props.todoItem.id}`} className={`form-check-label ${props.todoItem.checked ? 'todo-item-label-checked' : ''}`}>{props.todoItem.label}</label>}
+          onChange={event => props.changeTodoItem(props.todoItem, event.target.value, props.todoItem.checked)} data-testid="todoItemLabelInput" /> :
+        <label htmlFor={`itemCheckbox${props.todoItem.id}`} className={`form-check-label ${props.todoItem.checked ? 'todo-item-label-checked' : ''}`} data-testid="todoItemLabel">{props.todoItem.label}</label>}
       <div className="flex-grow-1" />
-      <a href="/#" className="todo-item-layout-button ms-3" onClick={() => setEdit(!edit)}>
+      <a href="/#" className="todo-item-layout-button ms-3" onClick={() => setEdit(!edit)} data-testid="setEditTodoItemButton">
         {edit ?
           <PencilFill /> :
           <Pencil />}
       </a>
-      <a href="/#" className="todo-item-layout-button additional-margin" onClick={() => props.deleteTodoItem(props.todoItem)}>
+      <a href="/#" className="todo-item-layout-button additional-margin" onClick={() => props.deleteTodoItem(props.todoItem)} data-testid="deleteTodoItemButton">
         <Trash3 />
       </a>
     </div>
