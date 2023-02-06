@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
-import { UserInterface } from '../modal/UserInterface';
+import { useAppSelector } from '../custom_hook/useAppSelector';
 import { Pencil, PencilFill, Trash3 } from 'react-bootstrap-icons';
 import './Weekly.scss';
 import axios from 'axios';
 import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
 import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
+import { selectUser, UserInterface } from '../redux/userSlice';
 
 interface Props {
-  user: UserInterface,
   day: number
 }
 
@@ -18,6 +18,7 @@ function Weekly (props: Props): JSX.Element {
   const [edit, setEdit] = useState(false)
   const [loading, setLoading] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const user = useAppSelector(selectUser).user as UserInterface
 
   useEffect(() => {
     setLoading(true)
@@ -34,7 +35,7 @@ function Weekly (props: Props): JSX.Element {
       setTimeout(() => axios
         .get('http://localhost:3001/weekly', {
           params: {
-            user_id: props.user.id,
+            user_id: user.id,
             day: props.day
           }
         })
@@ -47,13 +48,14 @@ function Weekly (props: Props): JSX.Element {
           setLoading(false)
         }), 100)
     }
-  }, [loading, props.user.id, props.day])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading])
 
   useUpdatePropEffect(() => {
     axios
       .post('http://localhost:3001/weekly', null, {
         params: {
-          user_id: props.user.id,
+          user_id: user.id,
           day: props.day,
           text: text
         }

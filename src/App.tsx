@@ -1,8 +1,10 @@
 import './App.scss';
 import './context/ThemeContext.scss';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useAppSelector } from './custom_hook/useAppSelector';
+import { useAppDispatch } from './custom_hook/useAppDispatch';
+import { selectUser, logout, signin } from './redux/userSlice';
 import { UserModal } from './modal/UserModal'
-import { UserInterface } from './modal/UserInterface';
 import { Toast } from './toast/Toast'
 import { MessageInterface } from './toast/MessageInterface';
 import { TodoListContainer } from './todo_list/TodoListContainer';
@@ -14,12 +16,13 @@ import { TodoLiteral, DiaryLiteral, WeeklyLiteral, SettingsInterface } from './m
 import { Timer } from './timer/Timer';
 
 function App(): JSX.Element {
-  const [user, setUser] = useState<UserInterface | null>(null)
   const [type, setType] = useState<SettingsInterface>(TodoLiteral)
   const [showModal, setShowModal] = useState<'user' | 'settings' | null>(null)
   const [message, setMessage] = useState<MessageInterface>({ text: '', type: 'warning' })
   const [darkTheme, setDarkTheme] = useState(false)
   const lastMessageRef = useRef<MessageInterface>({ text: '', type: 'warning' })
+  const user = useAppSelector(selectUser).user
+  const dispatch = useAppDispatch()
 
   const setMessageCallback = useCallback((message_: MessageInterface) => {
     setMessage({ id: lastMessageRef.current.id === undefined ? 0 : lastMessageRef.current.id + 1, ...message_ })
@@ -28,8 +31,9 @@ function App(): JSX.Element {
   useEffect(() => {
     const userSaved = sessionStorage.getItem('user')
     if (userSaved !== null) {
-      setUser(JSON.parse(userSaved))
+      dispatch(signin(JSON.parse(userSaved)))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -66,6 +70,9 @@ function App(): JSX.Element {
       else if (typeSaved === WeeklyLiteral) {
         setType(WeeklyLiteral)
       }
+      else {
+        setType(TodoLiteral)
+      }
     }
   }, [user])
 
@@ -78,7 +85,8 @@ function App(): JSX.Element {
         sessionStorage.setItem(user.login + 'Type', type as NonNullable<typeof type>)
       }
     }
-  }, [user, type])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type])
 
   useEffect(() => {
     lastMessageRef.current = message
@@ -94,7 +102,7 @@ function App(): JSX.Element {
 
   function _logout () {
     setMessageCallback({ text: `User "${user!.login}" logged out`, type: 'success' })
-    setUser(null)
+    dispatch(logout())
   }
 
   return (
@@ -126,19 +134,19 @@ function App(): JSX.Element {
           {user === null ?
             <h5>Hello, guest! Please sign up!</h5> :
             type === TodoLiteral ? 
-              <TodoListContainer user={user} /> :
+              <TodoListContainer /> :
               type === DiaryLiteral ?
-                <DiaryContainer user={user} /> :
-                <WeeklyContainer user={user} />}
+                <DiaryContainer /> :
+                <WeeklyContainer />}
         </div>
         <div className="layout-footer">
           Copyright&nbsp;<Github />&nbsp;2023 Made by Gamekoff
         </div>
       </div>
       {showModal === 'user' && 
-        <UserModal hideModal={() => setShowModal(null)} setUser={user => setUser(user)} setMessage={setMessageCallback} />}
+        <UserModal hideModal={() => setShowModal(null)} setMessage={setMessageCallback} />}
       {showModal === 'settings' &&
-        <SettingsModal hideModal={() => setShowModal(null)} user={user as NonNullable<UserInterface>} type={type} setType={type => setType(type)}/>}
+        <SettingsModal hideModal={() => setShowModal(null)} type={type} setType={type => setType(type)}/>}
     </div>
   );
 }

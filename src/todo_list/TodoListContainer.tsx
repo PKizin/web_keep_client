@@ -1,19 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useAppSelector } from '../custom_hook/useAppSelector';
 import { TodoList } from './TodoList';
-import { UserInterface } from '../modal/UserInterface';
 import { TodoListInterface } from './TodoListInterface';
 import axios from 'axios';
 import { FilePlus } from 'react-bootstrap-icons';
 import './TodoListContainer.scss';
+import { selectUser } from '../redux/userSlice';
 
-interface Props {
-  user: UserInterface
-}
-
-function TodoListContainer (props: Props): JSX.Element {
+function TodoListContainer (): JSX.Element {
   const [todoLists, setTodoLists] = useState<TodoListInterface[]>([])
   const [loading, setLoading] = useState(false)
   const todoListsRef = useRef<TodoListInterface[]>([])
+  const user = useAppSelector(selectUser).user
 
   const changeTodoListCallback = useCallback((todoList: TodoListInterface, title: string) => {
     let newTodoLists = todoListsRef.current.slice()
@@ -47,7 +45,7 @@ function TodoListContainer (props: Props): JSX.Element {
   }, [])
 
   useEffect(() => {
-    if (props.user === null) {
+    if (user === null) {
       setTodoLists([])
     }
     else {
@@ -55,7 +53,7 @@ function TodoListContainer (props: Props): JSX.Element {
       setTimeout(() => axios
         .get('http://localhost:3001/todo_list', {
           params: {
-            user_id: props.user!.id
+            user_id: user!.id
           }
         })
         .then(response => {
@@ -67,7 +65,7 @@ function TodoListContainer (props: Props): JSX.Element {
           setLoading(false)
         }), 100)
     } 
-  }, [props.user])
+  }, [user])
 
   useEffect(() => {
     todoListsRef.current = todoLists
@@ -75,10 +73,10 @@ function TodoListContainer (props: Props): JSX.Element {
 
   function _putTodoList () {
     setLoading(true)
-    setTimeout(() => props.user !== null && axios
+    setTimeout(() => user !== null && axios
       .put('http://localhost:3001/todo_list', null, {
         params: {
-          user_id: props.user.id,
+          user_id: user.id,
           title: 'New list'
         }
       })

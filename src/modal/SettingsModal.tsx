@@ -1,10 +1,8 @@
 import { Modal } from './Modal';
-import { UserInterface } from './UserInterface';
 import { TodoLiteral, DiaryLiteral, WeeklyLiteral, SettingsInterface } from './SettingsInterface';
 import './SettingsModal.scss';
 
 interface Props {
-  user: UserInterface,
   type: SettingsInterface,
   setType: (type: SettingsInterface) => void
   hideModal: () => void
