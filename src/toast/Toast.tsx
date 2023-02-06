@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useAppSelector } from '../custom_hook/useAppSelector';
 import { Message } from './Message';
-import { MessageInterface } from './MessageInterface';
+import { MessageInterface, selectMessage } from '../redux/messageSlice';
 import './Toast.scss';
 
-interface Props {
-  message: MessageInterface
-}
-
-function Toast(props: Props) {
+function Toast (): JSX.Element {
   const [messages, setMessages] = useState<MessageInterface[]>([])
   const messagesRef = useRef<MessageInterface[]>([])
+  const message = useAppSelector(selectMessage).message
 
   const deleteMessageCallback = useCallback((message: MessageInterface) => {
     const messageIndex = messagesRef.current.findIndex(m => m.id === message.id)
@@ -19,11 +17,15 @@ function Toast(props: Props) {
   }, [])
 
   useEffect(() => {
-    if (props.message.id !== undefined) {
-      setMessages([props.message, ...messagesRef.current])
-      setTimeout(() => deleteMessageCallback(props.message), 5000)
+    if (message !== null) {
+      const extMessage = {
+        ...message,
+        id: (messagesRef.current.length > 0) ? (messagesRef.current[0].id! - 1) : 0
+      }
+      setMessages([extMessage, ...messagesRef.current])
+      setTimeout(() => deleteMessageCallback(extMessage), 5000)
     }
-  }, [props.message, deleteMessageCallback])
+  }, [message, deleteMessageCallback])
 
   useEffect(() => {
     messagesRef.current = messages
@@ -31,8 +33,8 @@ function Toast(props: Props) {
 
   return (
     <div className="my-toast">
-      {messages.map((message, i) => 
-        <Message message={message} onDelete={deleteMessageCallback} key={message.id} />)}
+      {messages.map((msg, i) => 
+        <Message message={msg} onDelete={deleteMessageCallback} key={msg.id} />)}
     </div>
   )
 }

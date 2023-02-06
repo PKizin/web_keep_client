@@ -12,4 +12,16 @@ function getUser(username: string, password: string) {
   })
 }
 
-export { getUser }
+function putUser(username: string, password: string) {
+  return new Promise<any>(resolve => {
+    setTimeout(() => resolve(axios
+      .put('http://localhost:3001/user', null, {
+        params: {
+          'username': username,
+          'password': password
+        }
+      })), 1000)
+  })
+}
+
+export { getUser, putUser}

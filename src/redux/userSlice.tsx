@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getUser } from './userAsyncThunk';
+import { getUser, putUser } from './userAsyncThunk';
 import { RootState } from '../store';
 
 export interface UserInterface {
@@ -11,16 +11,12 @@ export interface UserInterface {
 
 export interface UserState {
   user: UserInterface | null,
-  loading: boolean,
-  failed: boolean,
-  failedMessage: string
+  loading: boolean
 }
 
 const initialState: UserState = {
   user: null,
-  loading: false,
-  failed: false,
-  failedMessage: ''
+  loading: false
 }
 
 export const signinAsync = createAsyncThunk(
@@ -28,6 +24,13 @@ export const signinAsync = createAsyncThunk(
   async (data: { username: string, password: string }) => {
     const response = await getUser(data.username, data.password)
     return response.data
+  }
+)
+
+export const signupAsync = createAsyncThunk(
+  'user/signupAsync',
+  async (data: { username: string, password: string }) => {
+    await putUser(data.username, data.password)
   }
 )
 
@@ -51,18 +54,19 @@ export const userSlice = createSlice({
         state.loading = false
         if (action.payload.length > 0) {
           state.user = action.payload[0]
-          state.failed = false
-          state.failedMessage = ''
-        }
-        else {
-          state.failed = true
-          state.failedMessage = `User ${action.meta.arg.username} not found`
         }
       })
       .addCase(signinAsync.rejected, (state, action) => {
         state.loading = false
-        state.failed = true
-        state.failedMessage = `Error: ${action}`
+      })
+      .addCase(signupAsync.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(signupAsync.fulfilled, (state) => {
+        state.loading = false
+      })
+      .addCase(signupAsync.rejected, (state, action) => {
+        state.loading = false
       })
   }
 })

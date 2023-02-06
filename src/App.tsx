@@ -1,12 +1,12 @@
 import './App.scss';
 import './context/ThemeContext.scss';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppSelector } from './custom_hook/useAppSelector';
 import { useAppDispatch } from './custom_hook/useAppDispatch';
 import { selectUser, logout, signin } from './redux/userSlice';
+import { push } from './redux/messageSlice';
 import { UserModal } from './modal/UserModal'
 import { Toast } from './toast/Toast'
-import { MessageInterface } from './toast/MessageInterface';
 import { TodoListContainer } from './todo_list/TodoListContainer';
 import { DiaryContainer } from './diary/DiaryContainer';
 import { WeeklyContainer } from './weekly/WeeklyContainer';
@@ -18,15 +18,9 @@ import { Timer } from './timer/Timer';
 function App(): JSX.Element {
   const [type, setType] = useState<SettingsInterface>(TodoLiteral)
   const [showModal, setShowModal] = useState<'user' | 'settings' | null>(null)
-  const [message, setMessage] = useState<MessageInterface>({ text: '', type: 'warning' })
   const [darkTheme, setDarkTheme] = useState(false)
-  const lastMessageRef = useRef<MessageInterface>({ text: '', type: 'warning' })
   const user = useAppSelector(selectUser).user
   const dispatch = useAppDispatch()
-
-  const setMessageCallback = useCallback((message_: MessageInterface) => {
-    setMessage({ id: lastMessageRef.current.id === undefined ? 0 : lastMessageRef.current.id + 1, ...message_ })
-  }, [])
 
   useEffect(() => {
     const userSaved = sessionStorage.getItem('user')
@@ -88,10 +82,6 @@ function App(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type])
 
-  useEffect(() => {
-    lastMessageRef.current = message
-  }, [message])
-
   /*function getName<Type extends Named>(obj: Type) : string {
     return obj.name
   }
@@ -101,7 +91,7 @@ function App(): JSX.Element {
   }*/
 
   function _logout () {
-    setMessageCallback({ text: `User "${user!.login}" logged out`, type: 'success' })
+    dispatch(push({ text: `User "${user!.login}" logged out`, type: 'success' }))
     dispatch(logout())
   }
 
@@ -130,7 +120,7 @@ function App(): JSX.Element {
           </div>
         </div>
         <div className="layout-body">
-          <Toast message={message} />
+          <Toast />
           {user === null ?
             <h5>Hello, guest! Please sign up!</h5> :
             type === TodoLiteral ? 
@@ -144,7 +134,7 @@ function App(): JSX.Element {
         </div>
       </div>
       {showModal === 'user' && 
-        <UserModal hideModal={() => setShowModal(null)} setMessage={setMessageCallback} />}
+        <UserModal hideModal={() => setShowModal(null)} />}
       {showModal === 'settings' &&
         <SettingsModal hideModal={() => setShowModal(null)} type={type} setType={type => setType(type)}/>}
     </div>

@@ -1,16 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useAppDispatch } from '../custom_hook/useAppDispatch'
 import { useAppSelector } from '../custom_hook/useAppSelector'
 import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect'
 import { Modal } from '../modal/Modal'
-import { MessageInterface } from '../toast/MessageInterface'
-import { selectUser, signinAsync } from '../redux/userSlice'
+import { selectUser, signinAsync, signupAsync } from '../redux/userSlice'
 import './UserModal.scss'
-import axios from 'axios'
 
 interface Props {
-  hideModal: () => void,
-  setMessage: (message: MessageInterface) => void
+  hideModal: () => void
 }
 
 function UserModal(props: Props) {
@@ -19,7 +16,21 @@ function UserModal(props: Props) {
   const [registered, setRegistered] = useState(true)
   const usernameInputRef = useRef<HTMLInputElement>(null)
   const dispatch = useAppDispatch()
-  const { user, loading, failed, failedMessage } = useAppSelector(selectUser)
+  const loading = useAppSelector(selectUser).loading
+
+  const okClickedCallback = useCallback(async () => {
+    if (!registered) {
+      await dispatch(signupAsync({
+        username: username,
+        password: password
+      }))
+    }
+    dispatch(signinAsync({ 
+      username: username, 
+      password: password
+    }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registered, username, password])
 
   useEffect(() => {
     usernameInputRef.current!.focus()
@@ -28,41 +39,13 @@ function UserModal(props: Props) {
   useUpdatePropEffect(() => {
     if (!loading) {
       props.hideModal()
-      if (failed) {
-        props.setMessage({ text: failedMessage, type: 'danger' })
-      }
-      else if (user !== null) {
-        props.setMessage({ text: `User "${user.login}" logged in`, type: 'success' })
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading])
 
-  function _signup(setLoading: (loading: boolean) => void) {
-    setLoading(true)
-    setTimeout(() => axios
-      .post('http://localhost:3001/user', null, {
-        params: {
-          'username': username,
-          'password': password
-        }
-      })
-      .then(() => {
-        props.setMessage({ text: `User "${username}" added`, type: 'success' })
-        //_signin(setLoading)
-      })
-      .catch(error => {
-        props.setMessage({ text: `Error: ${error.response && error.response.data && error.response.data.length > 0 ? error.response.data : error}`, type: 'danger' })
-      })
-      .finally(() => {
-        setLoading(false)
-        props.hideModal()
-      }), 1000)
-  }
-
   return (
     <Modal title={registered ? 'Log in' : 'Sign up'} titleLoading={registered ? 'Logging in...' : 'Signing up...'} loading={loading}
-      okClicked={() => dispatch(signinAsync({ username: username, password: password }))} 
+      okClicked={() => okClickedCallback()} 
       cancelClicked={() => props.hideModal()}
       isDisabled={() => username.length === 0 || password.length === 0}>
       <div className="user-modal-root">

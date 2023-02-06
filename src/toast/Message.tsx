@@ -1,4 +1,4 @@
-import { MessageInterface } from './MessageInterface';
+import { MessageInterface } from '../redux/messageSlice';
 import { XLg } from 'react-bootstrap-icons';
 import './Message.scss';
 
