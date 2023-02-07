@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf, isFulfilled, isPending, isRejected, PayloadAction } from '@reduxjs/toolkit';
 import { getUser, putUser } from './userAsyncThunk';
 import { RootState } from '../store';
 
@@ -47,25 +47,15 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(signinAsync.pending, (state) => {
-        state.loading = true
-      })
       .addCase(signinAsync.fulfilled, (state, action) => {
-        state.loading = false
         if (action.payload.length > 0) {
           state.user = action.payload[0]
         }
       })
-      .addCase(signinAsync.rejected, (state, action) => {
-        state.loading = false
-      })
-      .addCase(signupAsync.pending, (state) => {
+      .addMatcher(isPending, (state) => {
         state.loading = true
       })
-      .addCase(signupAsync.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(signupAsync.rejected, (state, action) => {
+      .addMatcher(isAnyOf(isFulfilled, isRejected), (state) => {
         state.loading = false
       })
   }

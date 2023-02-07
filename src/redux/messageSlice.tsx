@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isRejected, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import { signinAsync, signupAsync } from './userSlice'
 
@@ -40,19 +40,13 @@ export const messageSlice = createSlice({
           }
         }
       })
-      .addCase(signinAsync.rejected, (state, action) => {
-        state.message = {
-          text: `Error: ${action}`,
-          type: 'danger'
-        }
-      })
       .addCase(signupAsync.fulfilled, (state, action) => {
         state.message = {
           text: `User "${action.meta.arg.username}" added`,
           type: 'success'
         }
       })
-      .addCase(signupAsync.rejected, (state, action) => {
+      .addMatcher(isRejected, (state, action) => {
         state.message = {
           text: `Error: ${action}`,
           type: 'danger'
