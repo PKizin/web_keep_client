@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
+import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
+import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
 import { useAppSelector } from '../custom_hook/useAppSelector';
+import { selectUser, UserInterface } from '../redux/userSlice';
 import { Pencil, PencilFill, Trash3 } from 'react-bootstrap-icons';
 import './Weekly.scss';
 import axios from 'axios';
-import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
-import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
-import { selectUser, UserInterface } from '../redux/userSlice';
 
 interface Props {
   day: number

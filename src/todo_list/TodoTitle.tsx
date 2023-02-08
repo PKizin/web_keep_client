@@ -7,7 +7,7 @@ import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
 interface Props {
   todoList: TodoListInterface,
   changeTodoList: (todoList: TodoListInterface, title: string) => void,
-  postTodoList: (todoList: TodoListInterface) => void,
+  patchTodoList: (todoList: TodoListInterface) => void,
   deleteTodoList: (todoList: TodoListInterface) => void
 }
 
@@ -28,7 +28,7 @@ function TodoTitle (props: Props) {
   }, [edit])
 
   useUpdatePropEffect(() => {
-    props.postTodoList(props.todoList)
+    props.patchTodoList(props.todoList)
   }, [props.todoList.title])
 
   return (

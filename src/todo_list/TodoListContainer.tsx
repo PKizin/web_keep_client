@@ -22,9 +22,9 @@ function TodoListContainer (): JSX.Element {
     }
   }, [])
 
-  const postTodoListCallback = useCallback((todoList: TodoListInterface) => {
+  const patchTodoListCallback = useCallback((todoList: TodoListInterface) => {
     axios
-      .post('http://localhost:3001/todo_list', null, {
+      .patch('http://localhost:3001/todo_list', null, {
         params: {
           id: todoList.id,
           title: todoList.title
@@ -71,10 +71,10 @@ function TodoListContainer (): JSX.Element {
     todoListsRef.current = todoLists
   }, [todoLists])
 
-  function _putTodoList () {
+  function _postTodoList () {
     setLoading(true)
     setTimeout(() => user !== null && axios
-      .put('http://localhost:3001/todo_list', null, {
+      .post('http://localhost:3001/todo_list', null, {
         params: {
           user_id: user.id,
           title: 'New list'
@@ -95,11 +95,11 @@ function TodoListContainer (): JSX.Element {
       {todoLists.map(todoList => 
         <TodoList todoList={todoList} key={todoList.id} 
         changeTodoList={changeTodoListCallback}
-        postTodoList={postTodoListCallback}
+        patchTodoList={patchTodoListCallback}
         deleteTodoList={deleteTodoListCallback} />)}
       {loading ? 
         <div className="spinner-border" /> :
-        <a href="/#" className="todo-list-container-button" onClick={() => _putTodoList()} data-testid="putTodoListButton">
+        <a href="/#" className="todo-list-container-button" onClick={() => _postTodoList()} data-testid="putTodoListButton">
           <FilePlus size={32} />
         </a>}
     </>

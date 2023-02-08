@@ -1,13 +1,13 @@
 import { useState, useRef } from 'react';
-import { useAppSelector } from '../custom_hook/useAppSelector';
 import { useUpdateEffect } from '../custom_hook/useUpdateEffect';
 import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect';
 import { useKeyupEffect } from '../custom_hook/useKeyupEffect';
+import { useAppSelector } from '../custom_hook/useAppSelector';
+import { selectUser, UserInterface } from '../redux/userSlice';
 import { Pencil, PencilFill, Trash3 } from 'react-bootstrap-icons';
 import '../custom_prototype/DatePrototype';
 import './Diary.scss';
 import axios from 'axios';
-import { selectUser, UserInterface } from '../redux/userSlice';
 
 interface Props {
   previosDateClicked: object,
@@ -76,6 +76,17 @@ function Diary (props: Props): JSX.Element {
     return `${date.getMonthName()} ${date.getDate()}, ${date.getFullYear()}`
   }
 
+  function _postDiary () {
+    axios
+      .post('http://localhost:3001/diary', null, {
+        params: {
+          user_id: user.id,
+          date: _parseDate(date),
+          text: text
+        }
+      })
+  }
+
   function _getDiary () {
     setLoading(true)
     setTimeout(() => axios
@@ -96,17 +107,6 @@ function Diary (props: Props): JSX.Element {
       .finally(() => {
         setLoading(false)
       }), 100)
-  }
-
-  function _postDiary () {
-    axios
-      .post('http://localhost:3001/diary', null, {
-        params: {
-          user_id: user.id,
-          date: _parseDate(date),
-          text: text
-        }
-      })
   }
 
   return (

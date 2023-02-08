@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, isAnyOf, isFulfilled, isPending, isRejected, PayloadAction } from '@reduxjs/toolkit';
-import { getUser, putUser } from './userAsyncThunk';
+import { postUser, getUser } from './userAsyncThunk';
 import { RootState } from '../store';
 
 export interface UserInterface {
@@ -30,7 +30,7 @@ export const signinAsync = createAsyncThunk(
 export const signupAsync = createAsyncThunk(
   'user/signupAsync',
   async (data: { username: string, password: string }) => {
-    await putUser(data.username, data.password)
+    await postUser(data.username, data.password)
   }
 )
 

@@ -8,7 +8,7 @@ import { Pencil, PencilFill, Trash3 } from 'react-bootstrap-icons';
 interface Props {
   todoItem: TodoItemInterface,
   changeTodoItem: (todoItem: TodoItemInterface, label: string, checked: boolean) => void,
-  postTodoItem: (todoItem: TodoItemInterface) => void,
+  patchTodoItem: (todoItem: TodoItemInterface) => void,
   deleteTodoItem: (todoItem: TodoItemInterface) => void
 }
 
@@ -29,7 +29,7 @@ function TodoItem (props: Props): JSX.Element {
   }, [edit])
 
   useUpdatePropEffect(() => {
-    props.postTodoItem(props.todoItem)
+    props.patchTodoItem(props.todoItem)
   }, [props.todoItem.label, props.todoItem.checked])
 
   return (

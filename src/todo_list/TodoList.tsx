@@ -10,7 +10,7 @@ import { TodoTitle } from "./TodoTitle";
 interface Props {
   todoList: TodoListInterface,
   changeTodoList: (todoList: TodoListInterface, title: string) => void,
-  postTodoList: (todoList: TodoListInterface) => void,
+  patchTodoList: (todoList: TodoListInterface) => void,
   deleteTodoList: (todoList: TodoListInterface) => void
 }
 
@@ -29,9 +29,9 @@ function TodoList (props: Props): JSX.Element {
     }
   }, [])
 
-  const postTodoItemCallback = useCallback((todoItem: TodoItemInterface) => {
+  const patchTodoItemCallback = useCallback((todoItem: TodoItemInterface) => {
     axios
-      .post('http://localhost:3001/todo_item', null, {
+      .patch('http://localhost:3001/todo_item', null, {
         params: {
           id: todoItem.id,
           label: todoItem.label,
@@ -77,9 +77,9 @@ function TodoList (props: Props): JSX.Element {
     todoItemsRef.current = todoItems
   }, [todoItems])
 
-  function _putTodoItem () {
+  function _postTodoItem () {
     axios
-      .put('http://localhost:3001/todo_item', null, {
+      .post('http://localhost:3001/todo_item', null, {
         params: {
           list_id: props.todoList.id,
           label: 'New item'
@@ -106,9 +106,9 @@ function TodoList (props: Props): JSX.Element {
                 {todoItems.filter(todoItem => !todoItem.checked).map(todoItem =>
                   <TodoItem todoItem={todoItem} key={todoItem.id}
                     changeTodoItem={changeTodoItemCallback}
-                    postTodoItem={postTodoItemCallback}
+                    patchTodoItem={patchTodoItemCallback}
                     deleteTodoItem={deleteTodoItemCallback} />)}
-                <a href="/#" onClick={() => _putTodoItem()} data-testid="putTodoItemButton">
+                <a href="/#" onClick={() => _postTodoItem()} data-testid="putTodoItemButton">
                   <PlusSquare />
                 </a>
                 {todoItems.some(i => i.checked) ? 
@@ -117,7 +117,7 @@ function TodoList (props: Props): JSX.Element {
                     {todoItems.filter(todoItem => todoItem.checked).map(todoItem => 
                       <TodoItem todoItem={todoItem} key={todoItem.id}
                       changeTodoItem={changeTodoItemCallback}
-                      postTodoItem={postTodoItemCallback}
+                      patchTodoItem={patchTodoItemCallback}
                       deleteTodoItem={deleteTodoItemCallback} />)}
                   </> : ''}
               </>}
