@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, isAnyOf, isFulfilled, isPending, isRejected, PayloadAction } from '@reduxjs/toolkit';
-import { postUser, getUser } from './userAsyncThunk';
+import { postUser, getUserThunk } from './userAsyncThunk';
 import { RootState } from '../store';
 
 export interface UserInterface {
@@ -22,7 +22,7 @@ const initialState: UserState = {
 export const signinAsync = createAsyncThunk(
   'user/signinAsync',
   async (data: { username: string, password: string }) => {
-    const response = await getUser(data.username, data.password)
+    const response = await getUserThunk(data.username, data.password)
     return response.data
   }
 )
@@ -43,6 +43,20 @@ export const userSlice = createSlice({
     },
     signin: (state, action: PayloadAction<UserInterface>) => {
       state.user = action.payload
+    },
+    getUser: (state, action) => {},
+    getUserPending: (state) => {
+      state.loading = true
+    },
+    getUserFulfilled: (state, action) => {
+      state.loading = false
+      if (action.payload.length > 0) {
+        state.user = action.payload[0]
+      }
+    },
+    getUserCancelled: (state) => {
+      state.loading = false
+      alert('async process cancelled!')
     }
   },
   extraReducers: (builder) => {
@@ -61,7 +75,7 @@ export const userSlice = createSlice({
   }
 })
 
-export const { logout, signin } = userSlice.actions
+export const { logout, signin, getUser, getUserPending, getUserFulfilled, getUserCancelled } = userSlice.actions
 
 export const selectUser = (state: RootState) => state.user;
 

@@ -20,7 +20,7 @@ export const messageSlice = createSlice({
   name: 'message',
   initialState,
   reducers: {
-    push: (state, action: PayloadAction<MessageInterface>) => {
+    pushMessage: (state, action: PayloadAction<MessageInterface>) => {
       state.message = action.payload
     }
   },
@@ -55,7 +55,7 @@ export const messageSlice = createSlice({
   }
 })
 
-export const { push } = messageSlice.actions
+export const { pushMessage } = messageSlice.actions
 
 export const selectMessage = (state: RootState) => state.message
 

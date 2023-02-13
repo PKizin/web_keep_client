@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-function postUser(username: string, password: string) {
+export function postUser(username: string, password: string) {
   return new Promise<any>(resolve => {
     setTimeout(() => resolve(axios
       .post('http://localhost:3001/user', null, {
@@ -12,7 +12,7 @@ function postUser(username: string, password: string) {
   })
 }
 
-function getUser(username: string, password: string) {
+export function getUserThunk(username: string, password: string) {
   return new Promise<any>((resolve) => {
     setTimeout(() => resolve(axios
       .get('http://localhost:3001/user', {
@@ -23,5 +23,3 @@ function getUser(username: string, password: string) {
       })), 1000)
   })
 }
-
-export { postUser, getUser }

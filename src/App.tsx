@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAppSelector } from './custom_hook/useAppSelector';
 import { useAppDispatch } from './custom_hook/useAppDispatch';
 import { selectUser, logout, signin } from './redux/userSlice';
-import { push } from './redux/messageSlice';
+import { pushMessage } from './redux/messageSlice';
 import { UserModal } from './modal/UserModal'
 import { Toast } from './toast/Toast'
 import { TodoListContainer } from './todo_list/TodoListContainer';
@@ -91,7 +91,7 @@ function App(): JSX.Element {
   }*/
 
   function _logout () {
-    dispatch(push({ text: `User "${user!.login}" logged out`, type: 'success' }))
+    dispatch(pushMessage({ text: `User "${user!.login}" logged out`, type: 'success' }))
     dispatch(logout())
   }
 

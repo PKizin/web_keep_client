@@ -3,7 +3,7 @@ import { useAppDispatch } from '../custom_hook/useAppDispatch'
 import { useAppSelector } from '../custom_hook/useAppSelector'
 import { useUpdatePropEffect } from '../custom_hook/useUpdatePropEffect'
 import { Modal } from '../modal/Modal'
-import { selectUser, signinAsync, signupAsync } from '../redux/userSlice'
+import { selectUser, signinAsync, signupAsync, getUser, getUserPending } from '../redux/userSlice'
 import './UserModal.scss'
 
 interface Props {
@@ -19,7 +19,7 @@ function UserModal(props: Props) {
   const loading = useAppSelector(selectUser).loading
 
   const okClickedCallback = useCallback(async () => {
-    if (!registered) {
+    /*if (!registered) {
       await dispatch(signupAsync({
         username: username,
         password: password
@@ -27,6 +27,10 @@ function UserModal(props: Props) {
     }
     dispatch(signinAsync({ 
       username: username, 
+      password: password
+    }))*/
+    dispatch(getUser({
+      username: username,
       password: password
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
